@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRIN - Reward</title>
+  <style>
+
+    /* ===== 全局重置 ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ===== body：与 homepage 一致的背景渐变 ===== */
+    body {
+      background: linear-gradient(to bottom, #585858, #c64aef);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== 导航栏 ===== */
+    header {
+      background: linear-gradient(to bottom, #1a1a1a, #333333);
+      display: flex;
+      align-items: center;
+      padding: 0 2.5vw;
+      height: 88px;
+      flex-shrink: 0;
+    }
+
+    .frin-logo { width: 72px; height: auto; margin-right: 3.5vw; }
+
+    nav { display: flex; gap: 5vw; }
+
+    nav a {
+      font-family: 'Times New Roman', serif;
+      font-weight: bold;
+      font-size: 18pt;
+      color: #5a585b;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.3s;
+    }
+
+    nav a:hover  { color: #c8c8c8; }
+    nav a.active { color: #ff31eb; }
+
+    /* ===== 维护提示居中区域 ===== */
+    .maintenance {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 维护提示文字：Times New Roman，灰紫色调 */
+    .maintenance p {
+      font-family: 'Times New Roman', serif;
+      font-size: 20px;
+      color: #5a585b;
+      letter-spacing: 0.05em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ===== 导航栏 ===== -->
+  <header>
+    <img class="frin-logo" src="asset/frinLogo.png" alt="FRIN Logo">
+    <nav>
+      <a href="index.html" class="active">homepage</a>
+      <a href="recruit.html">recruit</a>
+      <a href="now.html">now</a>
+      <a href="contact.html">contact us</a>
+    </nav>
+  </header>
+
+  <!-- ===== 维护占位内容 ===== -->
+  <div class="maintenance">
+    <p>Sorry, this page is currently under maintenance.</p>
+  </div>
+
+</body>
+</html>

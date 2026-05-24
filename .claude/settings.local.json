@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"E:\\\\class\\\\研究\\\\进场加载.mp4\")",
+      "Skill(anthropic-skills:frin-site)",
+      "Skill(anthropic-skills:frin-site:*)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}
