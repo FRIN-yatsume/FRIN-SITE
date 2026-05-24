@@ -504,7 +504,7 @@
           const svgDoc = objEl.contentDocument;
           if (!svgDoc) return false;
 
-          const shapes = svgDoc.querySelectorAll('path, polygon, circle, ellipse, rect');
+          const shapes = svgDoc.querySelectorAll('path, polygon, polyline, line, circle, ellipse, rect');
           if (shapes.length === 0) return false;
 
           shapes.forEach(shape => {
@@ -528,7 +528,6 @@
         }
       }
 
-      // SVG 已加载则直接初始化，否则等待 load 事件
       if (objEl.contentDocument &&
           objEl.contentDocument.readyState !== 'loading') {
         if (!bindToShapes()) bindFallback();
@@ -576,36 +575,26 @@
 
       // 先把 video 设为不可见，防止 seek 完成前闪烁第一帧
       video.style.opacity = '0';
-      video.pause();
 
       // seek 到末帧后再淡入显示
       function revealLastFrame() {
         if (isNaN(video.duration)) return; // 安全检查：duration 未知则跳过
-        video.currentTime = Math.max(0, video.duration - 0.05); // 定位到最后一帧
+        video.currentTime = video.duration - 0.001; // 定位到最后一帧
         video.addEventListener('seeked', () => {
-          // seek 完成后确保暂停，停留在末帧，避免浏览器恢复到第一帧
-          video.pause();
+          // seek 完成，此时已停在末帧，淡入显示
           video.style.transition = 'opacity 0.3s ease';
           video.style.opacity    = '1';
         }, { once: true });
       }
 
-      function revealLastFrameIfNeeded() {
-        if (video.readyState >= 1) {
-          revealLastFrame();
-        } else {
-          video.addEventListener('loadedmetadata', revealLastFrame, { once: true });
-        }
+      // 根据 video 当前加载状态决定何时执行 seek
+      if (video.readyState >= 1) {
+        // metadata 已就绪，直接 seek
+        revealLastFrame();
+      } else {
+        // 等待 metadata 加载后再 seek
+        video.addEventListener('loadedmetadata', revealLastFrame, { once: true });
       }
-
-      // 如果页面从浏览器缓存恢复（如后退/前进），也重新定位到末帧
-      window.addEventListener('pageshow', (event) => {
-        if (!playIntro && event.persisted) {
-          revealLastFrameIfNeeded();
-        }
-      });
-
-      revealLastFrameIfNeeded();
 
       // UI 元素和热区立即显示，不需要等待视频
       showFinalState();
