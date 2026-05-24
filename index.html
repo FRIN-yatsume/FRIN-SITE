@@ -17,8 +17,7 @@
     /* ===== 全局重置 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ===== body：渐变背景，锁死视口高度，禁止滚动，纵向弹性布局 ===== */
-    /* 只有 homepage 禁止滚动 */
+    /* ===== body：渐变背景，锁死视口，禁止滚动 ===== */
     body {
       background: linear-gradient(to bottom, #585858, #c64aef);
       width: 100vw;
@@ -26,20 +25,38 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      margin: 0;
     }
 
-    /* ===== 顶部导航栏：横跨全宽 ===== */
-    header {
+    /* ===================================================
+       顶部 header：分两层
+       - #header-bar    ：纯黑深色条背景，BAR_KEYFRAMES 控制
+       - #header-content：logo + 导航文字，TITLE_KEYFRAMES 控制
+    =================================================== */
+    #header-bar {
+      position: relative;
       width: 100%;
-      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+      height: 8.15vh;
+      background: #000000;   /* 纯黑 */
+      flex-shrink: 0;
+      opacity: 0;            /* BAR_KEYFRAMES 控制 */
+      z-index: 100;
+    }
+
+    /* 内容层：绝对定位在黑条上方，独立控制透明度 */
+    #header-content {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       display: flex;
       align-items: center;
       padding: 0 2.5vw;
-      height: 8.15vh;   /* 设计稿比例：88 / 1080 */
-      flex-shrink: 0;
-      opacity: 0;       /* 初始透明，随标题一起进场 */
-      z-index: 100;
+      opacity: 0;            /* TITLE_KEYFRAMES 控制 */
+      pointer-events: none;
+    }
+
+    /* 文字可点击时开启 pointer-events */
+    #header-content.interactive {
+      pointer-events: all;
     }
 
     /* FRIN Logo */
@@ -65,18 +82,17 @@
     nav a:hover  { color: #c8c8c8; }
     nav a.active { color: #ff31eb; }
 
-    /* ===== 场景容器：吃掉 header 和 footer 之外的剩余高度，居中显示 scene ===== */
+    /* ===== 场景容器：剩余高度，居中放置 16:9 内容 ===== */
     .scene-container {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 0;      /* flex 子项收缩必要设置 */
+      min-height: 0;
       overflow: hidden;
     }
 
-    /* ===== 主场景（视频 + 覆盖层）：由 JS 计算实际 px 尺寸 ===== */
-    /* 16:9 居中，左右多余空间显示渐变背景 */
+    /* ===== 主场景：JS 计算 px 尺寸 ===== */
     .scene {
       position: relative;
       flex-shrink: 0;
@@ -101,12 +117,11 @@
       flex-direction: column;
       justify-content: center;
       padding-left: 3%;
-      opacity: 0;
+      opacity: 0;            /* TITLE_KEYFRAMES 控制 */
       pointer-events: none;
       z-index: 10;
     }
 
-    /* 标题行：Verdana Bold Italic */
     .title-line {
       font-family: 'Verdana', sans-serif;
       font-weight: bold;
@@ -117,10 +132,8 @@
       display: block;
     }
 
-    /* 每行开头字母单独染色 */
     .title-line .initial { color: #ff31eb; }
 
-    /* "of" 行：Palatino Linotype */
     .title-of {
       font-family: 'PalatinoLinotype', 'Palatino Linotype', Palatino, serif;
       font-weight: normal;
@@ -147,16 +160,31 @@
       pointer-events: all;
     }
 
-    /* 热区触发区（透明椭圆） */
-    .hotspot-trigger {
+    /* ===== SVG 热区 object 元素：铺满场景，透明不可见 ===== */
+    /* pointer-events: all 确保透明区域也能接收事件 */
+    .hotspot-obj {
       position: absolute;
-      border-radius: 50%;
-      background: transparent;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      pointer-events: all;
       cursor: pointer;
-      /* outline: 2px dashed rgba(255,255,255,0.4); */ /* 调试用 */
     }
 
-    /* 光点辉光 */
+    /* ===== highlight SVG 覆盖：hover 时淡入 ===== */
+    .hotspot-highlight {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 25;
+    }
+
+    .hotspot-highlight.visible { opacity: 1; }
+
+    /* ===== 光点辉光 ===== */
     .glow-point {
       position: absolute;
       width: 2.5%;
@@ -180,7 +208,7 @@
       50%       { transform: translate(-50%, -50%) scale(1.8); opacity: 1;    }
     }
 
-    /* Tooltip */
+    /* ===== Tooltip ===== */
     .tooltip {
       position: absolute;
       background: rgba(14, 0, 22, 0.9);
@@ -226,20 +254,20 @@
 
     .tooltip .region-link:hover { color: #edc969; }
 
-    /* ===== 底部条块：横跨全宽，纯黑 ===== */
-    footer {
+    /* ===== 底部条块：纯黑，全宽 ===== */
+    #footer {
       width: 100%;
-      background: #000000;
+      background: #000000;   /* 纯黑 */
       padding: 0 3vw;
-      height: 5.56vh;   /* 设计稿比例：60 / 1080 */
+      height: 5.56vh;
       display: flex;
       justify-content: flex-end;
       align-items: center;
       flex-shrink: 0;
-      opacity: 0;       /* 初始透明，JS 控制进场 */
+      opacity: 0;            /* BAR_KEYFRAMES 控制，与顶部黑条同步 */
     }
 
-    footer a {
+    #footer a {
       font-family: 'Times New Roman', serif;
       font-weight: bold;
       font-size: clamp(10px, 1.2vw, 22px);
@@ -249,24 +277,26 @@
       transition: color 0.3s;
     }
 
-    footer a:hover { color: #ffffff; }
+    #footer a:hover { color: #ffffff; }
 
   </style>
 </head>
 <body>
 
-  <!-- ===== 顶部导航栏：全宽横跨，两侧渐变背景透出 ===== -->
-  <header id="header">
-    <img class="frin-logo" src="asset/frinLogo.png" alt="FRIN Logo">
-    <nav>
-      <a href="index.html" class="active">homepage</a>
-      <a href="recruit.html">recruit</a>
-      <a href="now.html">now</a>
-      <a href="contact.html">contact us</a>
-    </nav>
-  </header>
+  <!-- ===== 顶部黑条（背景层 + 内容层分离控制透明度） ===== -->
+  <div id="header-bar">
+    <div id="header-content">
+      <img class="frin-logo" src="asset/frinLogo.png" alt="FRIN Logo">
+      <nav>
+        <a href="index.html" class="active">homepage</a>
+        <a href="recruit.html">recruit</a>
+        <a href="now.html">now</a>
+        <a href="contact.html">contact us</a>
+      </nav>
+    </div>
+  </div>
 
-  <!-- ===== 场景容器：剩余高度居中放置 16:9 内容 ===== -->
+  <!-- ===== 场景容器 ===== -->
   <div class="scene-container" id="scene-container">
     <div class="scene" id="scene">
 
@@ -284,20 +314,24 @@
         <span class="title-line"><span class="initial">N</span>euroscience</span>
       </div>
 
-      <!-- 热区层 -->
+      <!-- 热区层（视频结束后激活） -->
       <div class="hotspot-layer" id="hotspot-layer">
 
-        <!-- Reward 热区（Nucleus Accumbens） -->
-        <div class="hotspot-trigger"
-             style="left:49%; top:57%; width:9%; padding-bottom:6%;"
-             data-glow="glow-reward"
-             data-tooltip="tooltip-reward"
-             data-target="reward.html">
-        </div>
+        <!-- ── Reward：SVG 热区 + highlight + 光点 + tooltip ── -->
+        <object class="hotspot-obj" id="obj-reward"
+                data="asset/area_reward.svg"
+                type="image/svg+xml"
+                data-glow="glow-reward"
+                data-tooltip="tooltip-reward"
+                data-highlight="hl-reward"
+                data-target="reward.html">
+        </object>
+        <img class="hotspot-highlight" id="hl-reward"
+             src="asset/highlight-reward.svg" alt="">
         <div class="glow-point" id="glow-reward"
              style="left:53.5%; top:60%;
-                    background:radial-gradient(circle,#edc969 0%,rgba(237,201,105,0.25) 60%,transparent 100%);
-                    box-shadow:0 0 14px 7px rgba(237,201,105,0.5);">
+                    background:radial-gradient(circle,#edc969 0%,rgba(237,201,105,0.2) 60%,transparent 100%);
+                    box-shadow:0 0 16px 8px rgba(237,201,105,0.5);">
         </div>
         <div class="tooltip" id="tooltip-reward" style="left:53.5%; top:57%;">
           <span class="region-name">Nucleus Accumbens</span>
@@ -305,17 +339,21 @@
           <a class="region-link" href="reward.html">Awards &amp; Recognition →</a>
         </div>
 
-        <!-- Vision 热区（Visual Cortex） -->
-        <div class="hotspot-trigger"
-             style="left:73%; top:26%; width:9%; padding-bottom:6%;"
-             data-glow="glow-vision"
-             data-tooltip="tooltip-vision"
-             data-target="vision.html">
-        </div>
+        <!-- ── Vision：SVG 热区 + highlight + 光点 + tooltip ── -->
+        <object class="hotspot-obj" id="obj-vision"
+                data="asset/area_vision.svg"
+                type="image/svg+xml"
+                data-glow="glow-vision"
+                data-tooltip="tooltip-vision"
+                data-highlight="hl-vision"
+                data-target="vision.html">
+        </object>
+        <img class="hotspot-highlight" id="hl-vision"
+             src="asset/highlight-vision.svg" alt="">
         <div class="glow-point" id="glow-vision"
              style="left:77.5%; top:29%;
-                    background:radial-gradient(circle,#edc969 0%,rgba(237,201,105,0.25) 60%,transparent 100%);
-                    box-shadow:0 0 14px 7px rgba(237,201,105,0.5);">
+                    background:radial-gradient(circle,#edc969 0%,rgba(237,201,105,0.2) 60%,transparent 100%);
+                    box-shadow:0 0 16px 8px rgba(237,201,105,0.5);">
         </div>
         <div class="tooltip" id="tooltip-vision" style="left:77.5%; top:26%;">
           <span class="region-name">Visual Cortex</span>
@@ -323,23 +361,24 @@
           <a class="region-link" href="vision.html">Visual Research →</a>
         </div>
 
-        <!-- Secret 热区（无 tooltip，仅红点） -->
-        <div class="hotspot-trigger"
-             style="left:62%; top:44%; width:7%; padding-bottom:5%;"
-             data-glow="glow-secret"
-             data-target="secret.html">
-        </div>
+        <!-- ── Secret：SVG 热区 + 光点（无 tooltip，无 highlight） ── -->
+        <object class="hotspot-obj" id="obj-secret"
+                data="asset/area_secret.svg"
+                type="image/svg+xml"
+                data-glow="glow-secret"
+                data-target="secret.html">
+        </object>
         <div class="glow-point" id="glow-secret"
              style="left:65.5%; top:46.5%;
-                    background:radial-gradient(circle,#b2002a 0%,rgba(178,0,42,0.25) 60%,transparent 100%);
-                    box-shadow:0 0 14px 7px rgba(178,0,42,0.45);">
+                    background:radial-gradient(circle,#b2002a 0%,rgba(178,0,42,0.2) 60%,transparent 100%);
+                    box-shadow:0 0 16px 8px rgba(178,0,42,0.45);">
         </div>
 
       </div><!-- /hotspot-layer -->
     </div><!-- /scene -->
   </div><!-- /scene-container -->
 
-  <!-- ===== 底部条块：全宽纯黑，questionnaire 入口 ===== -->
+  <!-- ===== 底部纯黑条：与顶部黑条同步进场 ===== -->
   <footer id="footer">
     <a href="questionnaire.html">questionnaire→</a>
   </footer>
@@ -347,7 +386,7 @@
 
   <script>
 
-    // ===== 关键帧：底部条块进场（帧 7-11，8fps） =====
+    // ===== 关键帧：顶部黑条 + 底部黑条同步进场（帧 7-11，8fps） =====
     const BAR_KEYFRAMES = [
       { time: 0.875, opacity: 0.10 },
       { time: 1.000, opacity: 0.20 },
@@ -356,7 +395,7 @@
       { time: 1.375, opacity: 1.00 },
     ];
 
-    // ===== 关键帧：标题 + header 进场（帧 13-17，8fps） =====
+    // ===== 关键帧：标题文字 + 导航文字 + logo 同步进场（帧 13-17，8fps） =====
     const TITLE_KEYFRAMES = [
       { time: 1.625, opacity: 0.00 },
       { time: 1.750, opacity: 0.10 },
@@ -388,25 +427,23 @@
 
     // ===== DOM 元素引用 =====
     const video          = document.getElementById('intro-video');
-    const footer         = document.getElementById('footer');
+    const headerBar      = document.getElementById('header-bar');
+    const headerContent  = document.getElementById('header-content');
     const titleOverlay   = document.getElementById('title-overlay');
-    const header         = document.getElementById('header');
+    const footer         = document.getElementById('footer');
     const hotspotLayer   = document.getElementById('hotspot-layer');
     const scene          = document.getElementById('scene');
     const sceneContainer = document.getElementById('scene-container');
 
-    // ===== scene 尺寸计算：保持 16:9，居中在 scene-container 内 =====
-    // 左右多余空间显示 body 的渐变背景色
+    // ===== scene 尺寸：保持 16:9，居中，两侧透出渐变背景 =====
     function resizeScene() {
       const availW = sceneContainer.clientWidth;
       const availH = sceneContainer.clientHeight;
       let w, h;
       if (availW / availH >= 16 / 9) {
-        // 高度限制：以容器高度为准，宽度按比例，可能小于容器宽度（两侧漏出渐变）
         h = availH;
         w = h * 16 / 9;
       } else {
-        // 宽度限制：以容器宽度为准，高度按比例
         w = availW;
         h = w * 9 / 16;
       }
@@ -414,78 +451,127 @@
       scene.style.height = h + 'px';
     }
 
-    // 初始计算 + 窗口尺寸变化时重新计算
     resizeScene();
     window.addEventListener('resize', resizeScene);
 
-    // ===== 将所有 UI 元素设为最终显示态 =====
+    // ===== 所有元素设为最终显示态 =====
     function showFinalState() {
-      footer.style.opacity       = 1;
-      titleOverlay.style.opacity = 1;
-      header.style.opacity       = 1;
+      headerBar.style.opacity     = 1;
+      headerContent.style.opacity = 1;
+      headerContent.classList.add('interactive');
+      titleOverlay.style.opacity  = 1;
+      footer.style.opacity        = 1;
+    }
+
+    // ===== SVG 热区初始化：读取 object 内部路径，绑定交互事件 =====
+    // 注意：此方法需要通过本地服务器（如 VS Code Live Server）运行
+    // 直接双击 HTML 文件（file://）浏览器会阻止跨域读取 SVG 内容
+    function initSvgHotspot(objEl) {
+      const glowEl      = document.getElementById(objEl.dataset.glow);
+      const tooltipEl   = objEl.dataset.tooltip
+                          ? document.getElementById(objEl.dataset.tooltip)
+                          : null;
+      const highlightEl = objEl.dataset.highlight
+                          ? document.getElementById(objEl.dataset.highlight)
+                          : null;
+      const target = objEl.dataset.target;
+
+      function bindToShapes() {
+        try {
+          const svgDoc = objEl.contentDocument;
+          if (!svgDoc) return;
+
+          // 选取 SVG 内所有可见形状元素
+          const shapes = svgDoc.querySelectorAll('path, polygon, circle, ellipse, rect');
+          if (shapes.length === 0) return;
+
+          shapes.forEach(shape => {
+            // 将形状变透明，但保留 pointer-events（all = 透明区域也响应）
+            shape.style.fill          = 'transparent';
+            shape.style.stroke        = 'none';
+            shape.style.pointerEvents = 'all';
+            shape.style.cursor        = 'pointer';
+
+            // 鼠标进入：显示光点 / tooltip / highlight
+            shape.addEventListener('mouseenter', () => {
+              if (glowEl)      glowEl.classList.add('visible');
+              if (tooltipEl)   tooltipEl.classList.add('visible');
+              if (highlightEl) highlightEl.classList.add('visible');
+            });
+
+            // 鼠标离开：隐藏
+            shape.addEventListener('mouseleave', () => {
+              if (glowEl)      glowEl.classList.remove('visible');
+              if (tooltipEl)   tooltipEl.classList.remove('visible');
+              if (highlightEl) highlightEl.classList.remove('visible');
+            });
+
+            // 点击：跳转目标页面
+            shape.addEventListener('click', () => {
+              window.location.href = target;
+            });
+          });
+
+        } catch (e) {
+          // SVG contentDocument 访问失败时的静默降级（file:// 协议下）
+          console.warn('SVG hotspot init failed for', objEl.id,
+                       '— please use a local server (e.g. VS Code Live Server):', e.message);
+        }
+      }
+
+      // SVG 已加载则直接初始化，否则等待 load 事件
+      if (objEl.contentDocument &&
+          objEl.contentDocument.readyState !== 'loading') {
+        bindToShapes();
+      } else {
+        objEl.addEventListener('load', bindToShapes);
+      }
     }
 
     // ===== 首次访问 / 刷新判断 =====
-    // 刷新（reload）或首次访问 → 播放动画；从子页面返回 → 直接显示完成态
     const navEntry   = performance.getEntriesByType('navigation')[0];
     const isReload   = navEntry && navEntry.type === 'reload';
     const hasVisited = sessionStorage.getItem('frin_intro_played');
     const playIntro  = isReload || !hasVisited;
 
-    // 标记本次会话已访问
     sessionStorage.setItem('frin_intro_played', '1');
 
     if (playIntro) {
       // ===== 播放进场动画 =====
       video.play();
 
-      // 视频播放中：timeupdate 逐帧更新透明度
       video.addEventListener('timeupdate', () => {
         const t = video.currentTime;
-        footer.style.opacity       = getOpacity(BAR_KEYFRAMES, t);
-        const titleOp              = getOpacity(TITLE_KEYFRAMES, t);
-        titleOverlay.style.opacity = titleOp;
-        header.style.opacity       = titleOp;
+
+        // 顶部黑条 + 底部黑条：同步进场
+        const barOp             = getOpacity(BAR_KEYFRAMES, t);
+        headerBar.style.opacity = barOp;
+        footer.style.opacity    = barOp;
+
+        // 标题文字 + 导航文字：同步进场
+        const titleOp               = getOpacity(TITLE_KEYFRAMES, t);
+        titleOverlay.style.opacity  = titleOp;
+        headerContent.style.opacity = titleOp;
       });
 
-      // 视频结束：显示完成态，0.2s 后激活热区
       video.addEventListener('ended', () => {
         showFinalState();
+        headerContent.classList.add('interactive');
         setTimeout(() => hotspotLayer.classList.add('active'), 200);
       });
 
     } else {
-      // ===== 从子页面返回：跳过动画，直接完成态 =====
+      // ===== 从子页面返回：跳过动画 =====
       video.addEventListener('loadedmetadata', () => {
-        video.currentTime = video.duration; // 跳到末帧
+        video.currentTime = video.duration;
       });
       video.load();
       showFinalState();
       hotspotLayer.classList.add('active');
     }
 
-    // ===== 热区交互事件绑定 =====
-    document.querySelectorAll('.hotspot-trigger').forEach(trigger => {
-      const glowEl    = document.getElementById(trigger.dataset.glow);
-      const tooltipEl = trigger.dataset.tooltip
-                        ? document.getElementById(trigger.dataset.tooltip)
-                        : null;
-      const target = trigger.dataset.target;
-
-      trigger.addEventListener('mouseenter', () => {
-        if (glowEl)    glowEl.classList.add('visible');
-        if (tooltipEl) tooltipEl.classList.add('visible');
-      });
-
-      trigger.addEventListener('mouseleave', () => {
-        if (glowEl)    glowEl.classList.remove('visible');
-        if (tooltipEl) tooltipEl.classList.remove('visible');
-      });
-
-      trigger.addEventListener('click', () => {
-        window.location.href = target;
-      });
-    });
+    // ===== 初始化所有 SVG 热区 =====
+    document.querySelectorAll('.hotspot-obj').forEach(initSvgHotspot);
 
   </script>
 </body>
