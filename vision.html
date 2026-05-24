@@ -9,7 +9,7 @@
     /* ===== 全局重置 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ===== body：与 homepage 一致的背景渐变 ===== */
+    /* ===== body：渐变背景，允许滚动（子页面不锁定视口） ===== */
     body {
       background: linear-gradient(to bottom, #585858, #c64aef);
       min-height: 100vh;
@@ -17,24 +17,25 @@
       flex-direction: column;
     }
 
-    /* ===== 导航栏 ===== */
+    /* ===== 导航栏：横跨全宽 ===== */
     header {
-      background: linear-gradient(to bottom, #1a1a1a, #333333);
+      width: 100%;
+      background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
       display: flex;
       align-items: center;
       padding: 0 2.5vw;
-      height: 88px;
+      height: 8.15vh;
       flex-shrink: 0;
     }
 
-    .frin-logo { width: 72px; height: auto; margin-right: 3.5vw; }
+    .frin-logo { height: 70%; width: auto; margin-right: 3vw; }
 
-    nav { display: flex; gap: 5vw; }
+    nav { display: flex; gap: 4.5vw; }
 
     nav a {
       font-family: 'Times New Roman', serif;
       font-weight: bold;
-      font-size: 18pt;
+      font-size: clamp(10px, 1.2vw, 22px);
       color: #5a585b;
       text-decoration: none;
       letter-spacing: 0.04em;
@@ -50,15 +51,39 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 5vh 0;
     }
 
-    /* 维护提示文字：Times New Roman，灰紫色调 */
     .maintenance p {
       font-family: 'Times New Roman', serif;
-      font-size: 20px;
+      font-size: clamp(12px, 1.2vw, 22px);
       color: #5a585b;
       letter-spacing: 0.05em;
     }
+
+    /* ===== 底部条块：横跨全宽，纯黑 ===== */
+    footer {
+      width: 100%;
+      background: #000000;
+      padding: 0 3vw;
+      height: 5.56vh;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    footer a {
+      font-family: 'Times New Roman', serif;
+      font-weight: bold;
+      font-size: clamp(10px, 1.2vw, 22px);
+      color: #ff31eb;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.3s;
+    }
+
+    footer a:hover { color: #ffffff; }
 
   </style>
 </head>
@@ -68,10 +93,10 @@
   <header>
     <img class="frin-logo" src="asset/frinLogo.png" alt="FRIN Logo">
     <nav>
-      <a href="index.html" class="active">homepage</a>
-      <a href="recruit.html">recruit</a>
-      <a href="now.html">now</a>
-      <a href="contact.html">contact us</a>
+        <a href="index.html" class="active">homepage</a>
+        <a href="recruit.html">recruit</a>
+        <a href="now.html">now</a>
+        <a href="contact.html">contact us</a>
     </nav>
   </header>
 
@@ -79,6 +104,11 @@
   <div class="maintenance">
     <p>Sorry, this page is currently under maintenance.</p>
   </div>
+
+  <!-- ===== 底部条块 ===== -->
+  <footer>
+    <a href="questionnaire.html">questionnaire→</a>
+  </footer>
 
 </body>
 </html>
