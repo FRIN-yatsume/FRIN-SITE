@@ -186,14 +186,18 @@
 
     /* 热区形状（path / polyline） */
     .hotspot-svg .hotspot-shape {
-      /* ── 校准模式：注释掉下面两行可让热区可见 ──────────────────── */
-      /* fill: transparent; */   /* 正式状态：完全透明，不遮挡视频 */
-      /* stroke: none; */        /* 正式状态：无描边 */
+      /* ========== 热区可见性：下方两行控制热区显示/隐藏 ==========
+         - 当前为隐藏状态（正式状态）
+         - 需要调试时，注释掉下面两行，解除注释来激活可见样式（第194-196行）
+         ============================================================ */
+      fill: transparent;   /* 热区可见性：完全透明，不遮挡视频 */
+      stroke: none;        /* 热区可见性：无描边 */
 
-      /* ── 校准模式：临时可见样式 ─────────────────────────────────── */
-      fill: rgba(255, 0, 0, 0.3);   /* 可调整：校准时热区填充颜色和透明度 */
-      stroke: #ff0000;              /* 可调整：校准时热区描边颜色 */
-      stroke-width: 2;              /* 可调整：校准时热区描边宽度（SVG 单位，相对于 1920 画布） */
+      /* 热区可见性：调试模式的临时可见样式（当上面两行被注释时生效）
+      fill: rgba(255, 0, 0, 0.3);      热区可见性：校准时热区填充颜色和透明度
+      stroke: #ff0000;                 热区可见性：校准时热区描边颜色
+      stroke-width: 2;                 热区可见性：校准时热区描边宽度（SVG 单位，相对于 1920 画布）
+      */
 
       pointer-events: all; /* 透明区域也可接收点击，保持开启 */
       cursor: pointer;
@@ -201,32 +205,24 @@
 
     /* ===== 光点辉光 ===== */
     .glow-point {
-      position: absolute;
-      width: 2.5%;          /* 可调整：光点直径（占视口宽度的百分比） */
-      padding-bottom: 2.5%; /* 可调整：保持光点为正圆，与 width 保持一致 */
+      position: fixed;
+      width: 20px;          /* 可调整：光点直径（像素） */
+      height: 20px;         /* 保持圆形 */
       border-radius: 50%;
       transform: translate(-50%, -50%); /* 以光点中心为定位锚点，不要改 */
       opacity: 0;
       pointer-events: none;
-      mix-blend-mode: screen; /* 可调整：光点混合模式，screen=滤色（推荐），color-dodge=颜色减淡 */
       transition: opacity 0.25s ease;   /* 可调整：光点出现/消失过渡时长 */
       z-index: 30;
     }
 
     .glow-point.visible {
       opacity: 1;
-      animation: pulse-glow 1.5s ease-in-out infinite; /* 可调整：脉冲动画时长 */
-    }
-
-    /* 光点脉冲动画关键帧 */
-    @keyframes pulse-glow {
-      0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.85; } /* 可调整：最小尺寸和透明度 */
-      50%       { transform: translate(-50%, -50%) scale(1.8); opacity: 1;    } /* 可调整：最大尺寸和透明度 */
     }
 
     /* ===== Tooltip（脑区提示框） ===== */
     .tooltip {
-      position: absolute;
+      position: fixed;
       background: rgba(14, 0, 22, 0.9);          /* 可调整：提示框背景色和透明度 */
       border: 1px solid rgba(198, 74, 239, 0.55); /* 可调整：提示框边框颜色和透明度 */
       padding: 1% 1.4%;                           /* 可调整：提示框内边距（上下, 左右） */
@@ -234,7 +230,6 @@
       pointer-events: none;
       transition: opacity 0.3s ease;
       z-index: 40;
-      transform: translate(-50%, -120%); /* 可调整：提示框相对于 left/top 定位点的偏移 */
       white-space: nowrap;
     }
 
@@ -342,14 +337,12 @@
 
       <!-- =====================================================
            热区层：视频结束后激活
-           三个内联 SVG 与视频画面完全对齐（同一 1920×1080 坐标系）
-           ⚠️ 校准模式已开启：热区形状显示为红色半透明
-              校准完成后，将 CSS 中 .hotspot-shape 的 fill/stroke
-              改回 transparent / none 即可隐藏
+           热区可见性：三个内联 SVG 与视频画面完全对齐（同一 1920×1080 坐标系）
+           热区可见性：当前为隐藏状态，调试时修改 CSS 中 .hotspot-shape 的 fill/stroke
       ====================================================== -->
       <div class="hotspot-layer" id="hotspot-layer">
 
-        <!-- ── Reward 热区（Nucleus Accumbens，跳转 reward.html） ── -->
+        <!-- 热区可见性：Reward 热区（Nucleus Accumbens，跳转 reward.html） -->
         <svg class="hotspot-svg"
              id="obj-reward"
              viewBox="0 0 1920 1080"
@@ -362,23 +355,20 @@
                 d="M894.28,625.94c10.72,0,110.3,35.23,110.3,35.23l38.3,7.66,6.13-42.89,1.53-70.47-156.26,7.66s-13.79,50.55-9.19,49.02,9.19,13.79,9.19,13.79Z"/>
         </svg>
 
-        <!-- Reward 光点辉光（黄色，位置用 left/top 百分比定位） -->
+        <!-- Reward 光点辉光（黄色） -->
         <div class="glow-point" id="glow-reward"
-             style="left: 53.5%; top: 60%;    /* 可调整：Reward 光点的水平和垂直位置 */
-                    background: radial-gradient(circle, #edc969 0%, rgba(237,201,105,0.2) 60%, transparent 100%); /* 可调整：光点颜色（黄色） */
-                    box-shadow: 0 0 16px 8px rgba(237,201,105,0.5);">  /* 可调整：光点外发光强度和颜色 */
+             style="background: #edc969;">
         </div>
 
         <!-- Reward Tooltip（提示框位置与光点对应） -->
-        <div class="tooltip" id="tooltip-reward"
-             style="left: 53.5%; top: 57%;"> <!-- 可调整：Reward 提示框位置 -->
+        <div class="tooltip" id="tooltip-reward">
           <span class="region-name">Nucleus Accumbens</span>
           <span class="region-function">Reward</span>
           <a class="region-link" href="reward.html">Awards &amp; Recognition →</a>
         </div>
 
 
-        <!-- ── Vision 热区（Visual Cortex，两段 path 合并为一个区域，跳转 vision.html） ── -->
+        <!-- 热区可见性：Vision 热区（Visual Cortex，两段 path 合并为一个区域，跳转 vision.html） -->
         <svg class="hotspot-svg"
              id="obj-vision"
              viewBox="0 0 1920 1080"
@@ -395,21 +385,18 @@
 
         <!-- Vision 光点辉光（黄色） -->
         <div class="glow-point" id="glow-vision"
-             style="left: 77.5%; top: 29%;    /* 可调整：Vision 光点的水平和垂直位置 */
-                    background: radial-gradient(circle, #edc969 0%, rgba(237,201,105,0.2) 60%, transparent 100%); /* 可调整：光点颜色（黄色） */
-                    box-shadow: 0 0 16px 8px rgba(237,201,105,0.5);">
+             style="background: #edc969;">
         </div>
 
         <!-- Vision Tooltip -->
-        <div class="tooltip" id="tooltip-vision"
-             style="left: 77.5%; top: 26%;"> <!-- 可调整：Vision 提示框位置 -->
+        <div class="tooltip" id="tooltip-vision">
           <span class="region-name">Visual Cortex</span>
           <span class="region-function">Vision</span>
           <a class="region-link" href="vision.html">Visual Research →</a>
         </div>
 
 
-        <!-- ── Secret 热区（隐藏彩蛋：无 tooltip，仅红色光点，跳转 secret.html） ── -->
+        <!-- 热区可见性：Secret 热区（隐藏彩蛋：无 tooltip，仅红色光点，跳转 secret.html） -->
         <svg class="hotspot-svg"
              id="obj-secret"
              viewBox="0 0 1920 1080"
@@ -423,9 +410,7 @@
 
         <!-- Secret 光点辉光（红色） -->
         <div class="glow-point" id="glow-secret"
-             style="left: 65.5%; top: 46.5%; /* 可调整：Secret 光点的水平和垂直位置 */
-                    background: radial-gradient(circle, #b2002a 0%, rgba(178,0,42,0.2) 60%, transparent 100%); /* 可调整：光点颜色（红色） */
-                    box-shadow: 0 0 16px 8px rgba(178,0,42,0.45);">
+             style="background: #b2002a;">
         </div>
 
       </div><!-- /hotspot-layer -->
@@ -523,9 +508,10 @@
       const shapes = svgEl.querySelectorAll('.hotspot-shape');
 
       // hover 进入：显示光点 + tooltip
-      function showHover() {
+      function showHover(e) {
         if (glowEl)    glowEl.classList.add('visible');
         if (tooltipEl) tooltipEl.classList.add('visible');
+        updateHoverPosition(e);
       }
 
       // hover 离开：隐藏光点 + tooltip
@@ -534,10 +520,25 @@
         if (tooltipEl) tooltipEl.classList.remove('visible');
       }
 
+      // 更新光点和提示框位置到鼠标处
+      function updateHoverPosition(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+        if (glowEl) {
+          glowEl.style.left = x + 'px';
+          glowEl.style.top = y + 'px';
+        }
+        if (tooltipEl) {
+          tooltipEl.style.left = (x + 20) + 'px';
+          tooltipEl.style.top = y + 'px';
+        }
+      }
+
       // 为每个 shape 绑定交互事件
       shapes.forEach(shape => {
         shape.addEventListener('mouseenter', showHover);
         shape.addEventListener('mouseleave', hideHover);
+        shape.addEventListener('mousemove', updateHoverPosition);
         shape.addEventListener('click', () => {
           window.location.href = target;
         });
