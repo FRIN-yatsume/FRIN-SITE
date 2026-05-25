@@ -35,10 +35,10 @@
     #header-bar {
       position: relative;
       width: 100%;
-      height: 10vh; /* 可调整：顶部黑条高度 */
-      background: #000000;   /* 纯黑 */
+      height: 10vh;
+      background: #000000;
       flex-shrink: 0;
-      opacity: 0;            /* BAR_KEYFRAMES 控制 */
+      opacity: 0;
       z-index: 100;
     }
 
@@ -49,8 +49,8 @@
       width: 100%; height: 100%;
       display: flex;
       align-items: center;
-      padding: 0 2.5vw; /* 可调整：顶部导航左右内边距 */
-      opacity: 0;            /* TITLE_KEYFRAMES 控制 */
+      padding: 0 2.5vw;
+      opacity: 0;
       pointer-events: none;
     }
 
@@ -61,19 +61,19 @@
 
     /* FRIN Logo */
     .frin-logo {
-      height: 70%; /* 可调整：LOGO 高度 */
+      height: 70%;
       width: auto;
-      margin-right: 3vw; /* 可调整：LOGO 与导航间距 */
+      margin-right: 3vw;
     }
 
     /* 导航链接 */
-    nav { display: flex; gap: 4.5vw; /* 可调整：顶部导航链接间距 */ }
+    nav { display: flex; gap: 4.5vw; }
 
     nav a {
       font-family: 'Times New Roman', serif;
       font-weight: bold;
-      font-size: clamp(10px, 1.2vw, 22px); /* 可调整：顶部导航文字大小 */
-      color: #5a585b; /* 可调整：顶部导航文字颜色 */
+      font-size: clamp(10px, 1.2vw, 22px);
+      color: #5a585b;
       text-decoration: none;
       letter-spacing: 0.04em;
       transition: color 0.3s;
@@ -82,7 +82,7 @@
     nav a:hover  { color: #c8c8c8; }
     nav a.active { color: #ff31eb; }
 
-    /* ===== 场景容器：剩余高度，居中放置 16:9 内容 ===== */
+    /* ===== 场景容器：剩余高度，居中放置内容 ===== */
     .scene-container {
       flex: 1;
       display: flex;
@@ -92,11 +92,10 @@
       overflow: hidden;
     }
 
-    /* ===== 主场景：JS 计算 px 尺寸 ===== */
+    /* ===== 主场景：全屏 ===== */
     .scene {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh; /* 可调整：场景全屏尺寸 */
       overflow: hidden;
       z-index: 0;
     }
@@ -114,12 +113,12 @@
     .title-overlay {
       position: absolute;
       top: 0; left: 0;
-      width: 48%; height: 100%; /* 可调整：标题覆盖层宽度/高度 */
+      width: 48%; height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* 可调整：标题竖直对齐 */
-      padding-left: 3%; /* 可调整：标题左内边距 */
-      opacity: 0;            /* TITLE_KEYFRAMES 控制 */
+      justify-content: center;
+      padding-left: 3%;
+      opacity: 0;
       pointer-events: none;
       z-index: 10;
     }
@@ -128,8 +127,8 @@
       font-family: 'Verdana', sans-serif;
       font-weight: bold;
       font-style: italic;
-      font-size: clamp(16px, 5.8vw, 112px); /* 可调整：大标题文字大小 */
-      color: #ffffff; /* 可调整：大标题文字颜色 */
+      font-size: clamp(16px, 5.8vw, 112px);
+      color: #ffffff;
       line-height: 1.18;
       display: block;
     }
@@ -140,17 +139,17 @@
       font-family: 'PalatinoLinotype', 'Palatino Linotype', Palatino, serif;
       font-weight: normal;
       font-style: italic;
-      font-size: clamp(13px, 4.5vw, 86px); /* 可调整：of 字的文字大小 */
-      color: #ffffff; /* 可调整：of 字颜色 */
+      font-size: clamp(13px, 4.5vw, 86px);
+      color: #ffffff;
       line-height: 1.18;
       display: block;
     }
 
-    /* ===== 热区层 ===== */
+    /* ===== 热区层（视频结束后激活） ===== */
     .hotspot-layer {
       position: absolute;
       top: 0; left: 0;
-      width: 100%; height: 100%; /* 可调整：热区层尺寸 */
+      width: 100%; height: 100%;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.5s ease;
@@ -162,14 +161,24 @@
       pointer-events: all;
     }
 
-    /* ===== SVG 热区 object 元素：铺满场景，透明不可见 ===== */
-    /* pointer-events: all 确保透明区域也能接收事件 */
-    .hotspot-obj {
+    /* ===================================================
+       SVG 热区（内联方式）：铺满场景，透明不可见
+       - 用内联 <svg> 替代 <object>，彻底解决跨域问题
+       - pointer-events: all 确保透明区域也能接收事件
+    =================================================== */
+    .hotspot-svg {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      opacity: 0;
-      pointer-events: all;
+      overflow: visible;
+      pointer-events: none; /* 默认关闭，shape 上单独开启 */
+    }
+
+    /* 每个热区 path / polyline 的交互样式 */
+    .hotspot-svg .hotspot-shape {
+      fill: transparent;
+      stroke: none;
+      pointer-events: all; /* 透明区域也可点击 */
       cursor: pointer;
     }
 
@@ -189,10 +198,10 @@
     /* ===== 光点辉光 ===== */
     .glow-point {
       position: absolute;
-      width: 2.5%; /* 可调整：光点大小 */
+      width: 2.5%;
       padding-bottom: 2.5%;
       border-radius: 50%;
-      transform: translate(-50%, -50%); /* 可调整：光点定位偏移 */
+      transform: translate(-50%, -50%);
       opacity: 0;
       pointer-events: none;
       mix-blend-mode: screen;
@@ -205,13 +214,6 @@
       animation: pulse-glow 1.5s ease-in-out infinite;
     }
 
-    /* TEMPORARY: Pause glow-point visuals (hide and disable interactions)
-       Kept as a temporary measure while region logic is debugged. */
-    .glow-point {
-      display: none !important;
-      pointer-events: none !important;
-    }
-
     @keyframes pulse-glow {
       0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.85; }
       50%       { transform: translate(-50%, -50%) scale(1.8); opacity: 1;    }
@@ -220,14 +222,14 @@
     /* ===== Tooltip ===== */
     .tooltip {
       position: absolute;
-      background: rgba(14, 0, 22, 0.9); /* 可调整：提示框背景颜色 */
-      border: 1px solid rgba(198, 74, 239, 0.55); /* 可调整：提示框边框颜色 */
-      padding: 1% 1.4%; /* 可调整：提示框内边距 */
+      background: rgba(14, 0, 22, 0.9);
+      border: 1px solid rgba(198, 74, 239, 0.55);
+      padding: 1% 1.4%;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
       z-index: 40;
-      transform: translate(-50%, -120%); /* 可调整：提示框偏移位置 */
+      transform: translate(-50%, -120%);
       white-space: nowrap;
     }
 
@@ -235,8 +237,8 @@
 
     .tooltip .region-name {
       font-family: 'Times New Roman', serif;
-      font-size: clamp(7px, 0.65vw, 12px); /* 可调整：tooltip 子标题文字大小 */
-      color: #5a585b; /* 可调整：tooltip 子标题文字颜色 */
+      font-size: clamp(7px, 0.65vw, 12px);
+      color: #5a585b;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       display: block;
@@ -268,15 +270,15 @@
       position: fixed;
       bottom: 0; left: 0;
       width: 100%;
-      background: #000000;   /* 纯黑 */
-      padding: 0 3vw; /* 可调整：底部黑条左右内边距 */
-      height: 10vh; /* 可调整：底部黑条高度 */
+      background: #000000;
+      padding: 0 3vw;
+      height: 10vh;
       display: flex;
-      justify-content: flex-end; /* 可调整：底部内容水平对齐 */
-      align-items: center; /* 可调整：底部内容垂直对齐 */
+      justify-content: flex-end;
+      align-items: center;
       flex-shrink: 0;
-      opacity: 0;            /* BAR_KEYFRAMES 控制，与顶部黑条同步 */
-      z-index: 100; /* place above the fixed scene */
+      opacity: 0;
+      z-index: 100;
     }
 
     #footer a {
@@ -295,7 +297,7 @@
 </head>
 <body>
 
-  <!-- ===== 顶部黑条（背景层 + 内容层分离控制透明度） ===== -->
+  <!-- ===== 顶部黑条 ===== -->
   <div id="header-bar">
     <div id="header-content">
       <img class="frin-logo" src="asset/frinLogo.png" alt="FRIN Logo">
@@ -326,60 +328,100 @@
         <span class="title-line"><span class="initial">N</span>euroscience</span>
       </div>
 
-      <!-- 热区层（视频结束后激活） -->
+      <!-- =====================================================
+           热区层（视频结束后激活）
+           核心变更：用内联 <svg> 替代 <object> 标签
+           原因：<object> 加载外部 SVG 在 file:// 协议下跨域被拦截，
+                 contentDocument 无法读取内部 DOM，事件绑定失败。
+                 内联 SVG 直接在页面 DOM 中，无跨域问题，事件可直接绑定。
+      ====================================================== -->
       <div class="hotspot-layer" id="hotspot-layer">
 
-        <!-- ── Reward：SVG 热区 + highlight + 光点 + tooltip ── -->
-        <object class="hotspot-obj" id="obj-reward"
-                data="asset/area_reward.svg"
-                type="image/svg+xml"
-                data-glow="glow-reward"
-                data-tooltip="tooltip-reward"
-                data-highlight="hl-reward"
-                data-target="reward.html">
-        </object>
+        <!-- ── Reward 热区 ──
+             内联 SVG：viewBox 与 Illustrator 导出一致（1920×1080）
+             path 使用 fill="transparent" 不可见，但完整保留点击区域
+        -->
+        <svg class="hotspot-svg"
+             id="obj-reward"
+             viewBox="0 0 1920 1080"
+             xmlns="http://www.w3.org/2000/svg"
+             data-glow="glow-reward"
+             data-tooltip="tooltip-reward"
+             data-highlight="hl-reward"
+             data-target="reward.html">
+          <path class="hotspot-shape"
+                d="M894.28,625.94c10.72,0,110.3,35.23,110.3,35.23l38.3,7.66,6.13-42.89,1.53-70.47-156.26,7.66s-13.79,50.55-9.19,49.02,9.19,13.79,9.19,13.79Z"/>
+        </svg>
+
+        <!-- Reward：胶囊高亮标签（hover 时淡入） -->
         <img class="hotspot-highlight" id="hl-reward"
              src="asset/highlight-reward.svg" alt="">
+
+        <!-- Reward：光点辉光 -->
         <div class="glow-point" id="glow-reward"
              style="left:53.5%; top:60%;
                     background:radial-gradient(circle,#edc969 0%,rgba(237,201,105,0.2) 60%,transparent 100%);
                     box-shadow:0 0 16px 8px rgba(237,201,105,0.5);">
         </div>
+
+        <!-- Reward：Tooltip -->
         <div class="tooltip" id="tooltip-reward" style="left:53.5%; top:57%;">
           <span class="region-name">Nucleus Accumbens</span>
           <span class="region-function">Reward</span>
           <a class="region-link" href="reward.html">Awards &amp; Recognition →</a>
         </div>
 
-        <!-- ── Vision：SVG 热区 + highlight + 光点 + tooltip ── -->
-        <object class="hotspot-obj" id="obj-vision"
-                data="asset/area_vision.svg"
-                type="image/svg+xml"
-                data-glow="glow-vision"
-                data-tooltip="tooltip-vision"
-                data-highlight="hl-vision"
-                data-target="vision.html">
-        </object>
+
+        <!-- ── Vision 热区 ──
+             两段 path 共同构成 Visual Cortex 区域
+        -->
+        <svg class="hotspot-svg"
+             id="obj-vision"
+             viewBox="0 0 1920 1080"
+             xmlns="http://www.w3.org/2000/svg"
+             data-glow="glow-vision"
+             data-tooltip="tooltip-vision"
+             data-highlight="hl-vision"
+             data-target="vision.html">
+          <path class="hotspot-shape"
+                d="M1211.38,613.37c2.31,27.48,83.22,125.62,83.22,125.62l43.92-62.81-110.97-62.81"/>
+          <path class="hotspot-shape"
+                d="M1443.98,214.52l-125.31,31.8,228.2,154.42s87.32,194.24,44.43,275.43c-5.45,10.32-157.79,135.12-157.79,135.12l137.87,27.57,78.13-52.09,100.45-98.16-7.92-167.4-41.36-101.11-80.28-103.64-70.47-62.81-105.95-39.16Z"/>
+        </svg>
+
+        <!-- Vision：胶囊高亮标签 -->
         <img class="hotspot-highlight" id="hl-vision"
              src="asset/highlight-vision.svg" alt="">
+
+        <!-- Vision：光点辉光 -->
         <div class="glow-point" id="glow-vision"
              style="left:77.5%; top:29%;
                     background:radial-gradient(circle,#edc969 0%,rgba(237,201,105,0.2) 60%,transparent 100%);
                     box-shadow:0 0 16px 8px rgba(237,201,105,0.5);">
         </div>
+
+        <!-- Vision：Tooltip -->
         <div class="tooltip" id="tooltip-vision" style="left:77.5%; top:26%;">
           <span class="region-name">Visual Cortex</span>
           <span class="region-function">Vision</span>
           <a class="region-link" href="vision.html">Visual Research →</a>
         </div>
 
-        <!-- ── Secret：SVG 热区 + 光点（无 tooltip，无 highlight） ── -->
-        <object class="hotspot-obj" id="obj-secret"
-                data="asset/area_secret.svg"
-                type="image/svg+xml"
-                data-glow="glow-secret"
-                data-target="secret.html">
-        </object>
+
+        <!-- ── Secret 热区 ──
+             无 tooltip、无 highlight，仅红色光点，设计意图为隐藏彩蛋
+        -->
+        <svg class="hotspot-svg"
+             id="obj-secret"
+             viewBox="0 0 1920 1080"
+             xmlns="http://www.w3.org/2000/svg"
+             data-glow="glow-secret"
+             data-target="secret.html">
+          <polyline class="hotspot-shape"
+                    points="1153.17 431.38 1050.53 422.19 1024.49 475.81 1073.51 520.23 1108.74 520.23 1153.17 439.04"/>
+        </svg>
+
+        <!-- Secret：光点辉光（红色） -->
         <div class="glow-point" id="glow-secret"
              style="left:65.5%; top:46.5%;
                     background:radial-gradient(circle,#b2002a 0%,rgba(178,0,42,0.2) 60%,transparent 100%);
@@ -390,7 +432,7 @@
     </div><!-- /scene -->
   </div><!-- /scene-container -->
 
-  <!-- ===== 底部纯黑条：与顶部黑条同步进场 ===== -->
+  <!-- ===== 底部纯黑条 ===== -->
   <footer id="footer">
     <a href="questionnaire.html">questionnaire→</a>
   </footer>
@@ -398,7 +440,7 @@
 
   <script>
 
-    // ===== 关键帧：顶部黑条 + 底部黑条同步进场（帧 7-11，8fps） =====
+    // ===== 关键帧：顶部黑条 + 底部黑条同步进场 =====
     const BAR_KEYFRAMES = [
       { time: 0.875, opacity: 0.10 },
       { time: 1.000, opacity: 0.20 },
@@ -407,7 +449,7 @@
       { time: 1.375, opacity: 1.00 },
     ];
 
-    // ===== 关键帧：标题文字 + 导航文字 + logo 同步进场（帧 13-17，8fps） =====
+    // ===== 关键帧：标题文字 + 导航文字 + logo 同步进场 =====
     const TITLE_KEYFRAMES = [
       { time: 1.625, opacity: 0.00 },
       { time: 1.750, opacity: 0.10 },
@@ -445,18 +487,12 @@
     const footer         = document.getElementById('footer');
     const hotspotLayer   = document.getElementById('hotspot-layer');
     const scene          = document.getElementById('scene');
-    const sceneContainer = document.getElementById('scene-container');
-    // ===== Feature flags =====
-    // Set to true to pause any glow-point visual logic while debugging.
-    const PAUSE_GLOW = true;
 
-    // ===== scene 尺寸：保持 16:9，居中，两侧透出渐变背景 =====
+    // ===== scene 尺寸：全视口 =====
     function resizeScene() {
-      // Keep the scene at full viewport size (video should fill whole screen)
       scene.style.width  = window.innerWidth + 'px';
       scene.style.height = window.innerHeight + 'px';
     }
-
     resizeScene();
     window.addEventListener('resize', resizeScene);
 
@@ -469,81 +505,50 @@
       footer.style.opacity        = 1;
     }
 
-    // ===== SVG 热区初始化：读取 object 内部路径，绑定交互事件 =====
-    // 注意：此方法需要通过本地服务器（如 VS Code Live Server）运行
-    // 直接双击 HTML 文件（file://）浏览器会阻止跨域读取 SVG 内容
-    function initSvgHotspot(objEl) {
-      const glowEl      = document.getElementById(objEl.dataset.glow);
-      const tooltipEl   = objEl.dataset.tooltip
-                          ? document.getElementById(objEl.dataset.tooltip)
+    // =====================================================
+    // 初始化内联 SVG 热区
+    // 与原来的 <object> 方案的核心区别：
+    //   原方案：通过 objEl.contentDocument 进入 SVG 的 iframe 内部 DOM
+    //   新方案：SVG 已在主页面 DOM 中，直接 querySelectorAll 查找 shape
+    // =====================================================
+    function initSvgHotspot(svgEl) {
+      // 读取关联元素
+      const glowEl      = svgEl.dataset.glow
+                          ? document.getElementById(svgEl.dataset.glow)
                           : null;
-      const highlightEl = objEl.dataset.highlight
-                          ? document.getElementById(objEl.dataset.highlight)
+      const tooltipEl   = svgEl.dataset.tooltip
+                          ? document.getElementById(svgEl.dataset.tooltip)
                           : null;
-      const target = objEl.dataset.target;
+      const highlightEl = svgEl.dataset.highlight
+                          ? document.getElementById(svgEl.dataset.highlight)
+                          : null;
+      const target = svgEl.dataset.target;
 
-      objEl.style.pointerEvents = 'all';
-      objEl.style.cursor = 'pointer';
+      // 查找该 SVG 内所有热区形状（已有 class="hotspot-shape"）
+      const shapes = svgEl.querySelectorAll('.hotspot-shape');
 
+      // hover 显示：光点 / tooltip / 高亮
       function showHover() {
-        /* Temporarily disabled glow-point activation */
-        // if (!PAUSE_GLOW && glowEl)      glowEl.classList.add('visible');
-        if (tooltipEl)                   tooltipEl.classList.add('visible');
-        if (highlightEl)                 highlightEl.classList.add('visible');
+        if (glowEl)      glowEl.classList.add('visible');
+        if (tooltipEl)   tooltipEl.classList.add('visible');
+        if (highlightEl) highlightEl.classList.add('visible');
       }
 
+      // hover 隐藏
       function hideHover() {
-        /* Temporarily disabled glow-point deactivation */
-        // if (!PAUSE_GLOW && glowEl)      glowEl.classList.remove('visible');
-        if (tooltipEl)                   tooltipEl.classList.remove('visible');
-        if (highlightEl)                 highlightEl.classList.remove('visible');
+        if (glowEl)      glowEl.classList.remove('visible');
+        if (tooltipEl)   tooltipEl.classList.remove('visible');
+        if (highlightEl) highlightEl.classList.remove('visible');
       }
 
-      function bindFallback() {
-        objEl.addEventListener('mouseenter', showHover);
-        objEl.addEventListener('mouseleave', hideHover);
-        objEl.addEventListener('click', () => {
+      // 给每个 shape 绑定事件
+      shapes.forEach(shape => {
+        shape.addEventListener('mouseenter', showHover);
+        shape.addEventListener('mouseleave', hideHover);
+        shape.addEventListener('click', () => {
           window.location.href = target;
         });
-      }
-
-      function bindToShapes() {
-        try {
-          const svgDoc = objEl.contentDocument;
-          if (!svgDoc) return false;
-
-          const shapes = svgDoc.querySelectorAll('path, polygon, polyline, line, circle, ellipse, rect');
-          if (shapes.length === 0) return false;
-
-          shapes.forEach(shape => {
-            shape.style.fill          = 'transparent';
-            shape.style.stroke        = 'none';
-            shape.style.pointerEvents = 'all';
-            shape.style.cursor        = 'pointer';
-
-            shape.addEventListener('mouseenter', showHover);
-            shape.addEventListener('mouseleave', hideHover);
-            shape.addEventListener('click', () => {
-              window.location.href = target;
-            });
-          });
-
-          return true;
-        } catch (e) {
-          console.warn('SVG hotspot init failed for', objEl.id,
-                       '— please use a local server (e.g. VS Code Live Server):', e.message);
-          return false;
-        }
-      }
-
-      if (objEl.contentDocument &&
-          objEl.contentDocument.readyState !== 'loading') {
-        if (!bindToShapes()) bindFallback();
-      } else {
-        objEl.addEventListener('load', () => {
-          if (!bindToShapes()) bindFallback();
-        });
-      }
+      });
     }
 
     // ===== 首次访问 / 刷新判断 =====
@@ -560,13 +565,11 @@
 
       video.addEventListener('timeupdate', () => {
         const t = video.currentTime;
-
-        // 顶部黑条 + 底部黑条：同步进场
+        // 顶部黑条 + 底部黑条同步进场
         const barOp             = getOpacity(BAR_KEYFRAMES, t);
         headerBar.style.opacity = barOp;
         footer.style.opacity    = barOp;
-
-        // 标题文字 + 导航文字：同步进场
+        // 标题文字 + 导航文字同步进场
         const titleOp               = getOpacity(TITLE_KEYFRAMES, t);
         titleOverlay.style.opacity  = titleOp;
         headerContent.style.opacity = titleOp;
@@ -575,42 +578,35 @@
       video.addEventListener('ended', () => {
         showFinalState();
         headerContent.classList.add('interactive');
+        // 视频结束后 0.2s 激活热区层
         setTimeout(() => hotspotLayer.classList.add('active'), 200);
       });
 
     } else {
       // ===== 从子页面返回：跳过动画，直接显示末帧 =====
-
-      // 先把 video 设为不可见，防止 seek 完成前闪烁第一帧
       video.style.opacity = '0';
 
-      // seek 到末帧后再淡入显示
       function revealLastFrame() {
-        if (isNaN(video.duration)) return; // 安全检查：duration 未知则跳过
-        video.currentTime = video.duration - 0.001; // 定位到最后一帧
+        if (isNaN(video.duration)) return;
+        video.currentTime = video.duration - 0.001;
         video.addEventListener('seeked', () => {
-          // seek 完成，此时已停在末帧，淡入显示
           video.style.transition = 'opacity 0.3s ease';
           video.style.opacity    = '1';
         }, { once: true });
       }
 
-      // 根据 video 当前加载状态决定何时执行 seek
       if (video.readyState >= 1) {
-        // metadata 已就绪，直接 seek
         revealLastFrame();
       } else {
-        // 等待 metadata 加载后再 seek
         video.addEventListener('loadedmetadata', revealLastFrame, { once: true });
       }
 
-      // UI 元素和热区立即显示，不需要等待视频
       showFinalState();
       hotspotLayer.classList.add('active');
     }
 
-    // ===== 初始化所有 SVG 热区 =====
-    document.querySelectorAll('.hotspot-obj').forEach(initSvgHotspot);
+    // ===== 初始化所有内联 SVG 热区 =====
+    document.querySelectorAll('.hotspot-svg').forEach(initSvgHotspot);
 
   </script>
 </body>
