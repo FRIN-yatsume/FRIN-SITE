@@ -1,10 +1,10 @@
 /* ===== 子页面 Chrome：排版与 index 对齐（index 不引用本文件） ===== */
 
 @font-face {
-  font-family: 'TimesNewRomanLocal';
-  src: url('../asset/timesbd.ttf') format('truetype');
+  font-family: 'LibreBaskerville';
+  src: url('../asset/LibreBaskerville-VariableFont_wght.ttf') format('truetype');
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400 700;
   font-display: swap;
 }
 
@@ -85,7 +85,7 @@ nav {
 }
 
 nav a {
-  font-family: 'TimesNewRomanLocal', 'Times New Roman', serif;
+  font-family: 'LibreBaskerville', 'Libre Baskerville', serif;
   font-weight: bold;
   font-size: clamp(10px, 1.3vw, 48px);
   color: #5a585b;
@@ -111,7 +111,7 @@ nav a.active { color: #d6d6d6; }
 }
 
 #footer a {
-  font-family: 'Times New Roman', serif;
+  font-family: 'LibreBaskerville', 'Libre Baskerville', serif;
   font-weight: bold;
   font-size: clamp(10px, 1.2vw, 22px);
   color: var(--questionnaire-color);
