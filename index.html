@@ -35,11 +35,12 @@
     #header-bar {
       position: relative;
       width: 100%;
-      height: 10vh;         /* 可调整：顶部黑条高度 */
+      height: 20vh;         /* 可调整：顶部黑条高度 */
       background: #000000;  /* 可调整：顶部黑条背景颜色 */
       flex-shrink: 0;
       opacity: 0;           /* 进场动画初始值，不要改这里 */
       z-index: 100;
+      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1); /* 这里设置黑条淡入过渡，贝塞尔曲线使透明度变化更平滑 */
     }
 
     /* 内容层：绝对定位在黑条上，独立控制透明度 */
@@ -52,6 +53,7 @@
       padding: 0 2.5vw;     /* 可调整：顶部导航左右内边距 */
       opacity: 0;
       pointer-events: none;
+      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* 进场结束后开启点击 */
@@ -125,7 +127,8 @@
       padding-left: 3%;        /* 可调整：标题距离左边缘的距离 */
       opacity: 0;
       pointer-events: none;
-      z-index: 10;
+      z-index: 1001; /* 保证标题文字置于页面顶层，高于顶部黑条 */
+      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* 标题每一行（Fuji / Research / Institute / Neuroscience） */
@@ -277,13 +280,14 @@
       width: 100%;
       background: #000000;    /* 可调整：底部黑条背景颜色 */
       padding: 0 3vw;         /* 可调整：底部黑条左右内边距 */
-      height: 10vh;           /* 可调整：底部黑条高度 */
+      height: 15vh;           /* 可调整：底部黑条高度 */
       display: flex;
       justify-content: flex-end; /* 可调整：底部内容水平对齐，flex-end=靠右 flex-start=靠左 center=居中 */
       align-items: center;
       flex-shrink: 0;
       opacity: 0;
       z-index: 100;
+      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     #footer a {
@@ -427,11 +431,11 @@
 
     // ===== 进场动画关键帧：顶部黑条 + 底部黑条同步进场 =====
     const BAR_KEYFRAMES = [
-      { time: 0.875, opacity: 0.10 },
-      { time: 1.000, opacity: 0.20 },
-      { time: 1.125, opacity: 0.40 },
-      { time: 1.250, opacity: 0.80 },
-      { time: 1.375, opacity: 1.00 },
+      { time: 0.800, opacity: 0.10 },
+      { time: 0.900, opacity: 0.20 },
+      { time: 1.000, opacity: 0.40 },
+      { time: 1.100, opacity: 0.80 },
+      { time: 1.200, opacity: 1.00 },
     ];
 
     // ===== 进场动画关键帧：标题 + 导航 + Logo 同步进场 =====
@@ -452,7 +456,7 @@
 
     // ===== 根据当前视频时间插值出 opacity =====
     function getOpacity(keyframes, currentTime) {
-      if (currentTime <= keyframes[0].time) return keyframes[0].opacity;
+      if (currentTime < keyframes[0].time) return 0;
       if (currentTime >= keyframes[keyframes.length - 1].time) return 1;
       for (let i = 0; i < keyframes.length - 1; i++) {
         const a = keyframes[i], b = keyframes[i + 1];
@@ -557,7 +561,8 @@
       // ── 首次访问 / 刷新：播放进场动画 ──
       video.play();
 
-      video.addEventListener('timeupdate', () => {
+      let rafId = null;
+      function refreshIntroOpacity() {
         const t = video.currentTime;
         // 顶部 + 底部黑条同步淡入
         const barOp             = getOpacity(BAR_KEYFRAMES, t);
@@ -567,14 +572,39 @@
         const titleOp               = getOpacity(TITLE_KEYFRAMES, t);
         titleOverlay.style.opacity  = titleOp;
         headerContent.style.opacity = titleOp;
+
+        if (!video.paused && !video.ended) {
+          rafId = requestAnimationFrame(refreshIntroOpacity);
+        } else {
+          rafId = null;
+        }
+      }
+
+      video.addEventListener('play', () => {
+        if (rafId === null) rafId = requestAnimationFrame(refreshIntroOpacity);
+      });
+
+      video.addEventListener('pause', () => {
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
       });
 
       video.addEventListener('ended', () => {
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
         showFinalState();
         headerContent.classList.add('interactive');
         // 视频结束后 0.2s 激活热区层（可调整：热区激活延迟时间，单位毫秒）
         setTimeout(() => hotspotLayer.classList.add('active'), 200);
       });
+
+      if (!video.paused) {
+        rafId = requestAnimationFrame(refreshIntroOpacity);
+      }
 
     } else {
       // ── 从子页面返回：跳过动画，直接定位到视频末帧 ──
