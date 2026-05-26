@@ -86,9 +86,11 @@
          → 默认 50%：导航不伸入左半屏（避免压标题）
          → 改为 0 或去掉 nav 的 left 属性 = 可一直向左延
 
-       【上下 · 只挪导航、Logo 不动】
+       【上下 · 导航底 ↔ 黑条底】
+       --nav-bottom-gap
+         → 链接底部距 header 黑条底部的距离（0=完全贴底）
        --nav-offset-y
-         → 正值向下、负值向上
+         → 在贴底锚定基础上的整体上下微调（正值向下、负值向上）；Logo 仍用 --logo-offset-y
     =================================================== */
     /* ===================================================
        大标题「of」/「Neuroscience」单独位置（不影响 Fuji 等其它行）
@@ -114,7 +116,8 @@
       --nav-align-right: var(--right-edge-inset);
       --nav-link-gap: 15vw;
       --nav-letter-spacing: 0.03em;
-      --nav-offset-y: 0px;
+      --nav-bottom-gap: 0px;              /* 可调整：导航链接底 ↔ header 黑条底（0=完全贴底） */
+      --nav-offset-y: -18px;                /* 可调整：导航整体 Y 轴微调（正值向下、负值向上） */
       --nav-max-left: 20%;
       --title-of-offset-x: 15px;
       --title-of-offset-y: -24px;
@@ -141,7 +144,7 @@
       --questionnaire-color: #c64aef;       /* 可调整：questionnaire 默认颜色 */
       --questionnaire-hover-color: #ffffff; /* 可调整：questionnaire hover 颜色 */
       --questionnaire-letter-spacing: 0.04em; /* 可调整：字间距 */
-      --questionnaire-top-gap: 10px;        /* 可调整：链接顶部距 footer 黑条顶部的距离（0=完全贴顶） */
+      --questionnaire-top-gap: 18px;        /* 可调整：链接顶部距 footer 黑条顶部的距离（0=完全贴顶） */
       --questionnaire-offset-x: 18px;        /* 可调整：questionnaire 文字左右微调（正值向右） */
     }
 
@@ -209,9 +212,10 @@
       display: flex;
       flex-direction: row;
       justify-content: flex-end;        /* 整组贴右，contact us 在最右 */
-      align-items: center;
+      align-items: flex-end;            /* 导航锚定黑条底部，见 --nav-bottom-gap */
       gap: var(--nav-link-gap);       /* 可调整：链接间距，见 :root */
-      margin-top: var(--nav-offset-y);  /* 可调整：只挪导航上下，见 :root */
+      padding-bottom: var(--nav-bottom-gap); /* 可调整：链接底 ↔ 黑条底距离 */
+      transform: translateY(var(--nav-offset-y)); /* 可调整：导航整体 Y 轴微调 */
     }
 
     nav a {
