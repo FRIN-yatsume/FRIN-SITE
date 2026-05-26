@@ -17,9 +17,42 @@
     /* ===== 全局重置 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* ===================================================
+       Logo / 标题 位置调整说明（按需求改下面变量即可）
+
+       【左右 · Logo 与标题一起动】
+       --content-inset-left
+         → Logo 左缘 与 大标题首字（Fuji 的 F）对齐，改一处两边同步
+         → 数值变大 = 一起往右；变小 = 一起往左
+         → 例：3% | 4vw | clamp(16px, 3vw, 56px)
+
+       【左右 · 只挪 Logo、标题不动】
+       --logo-offset-x
+         → 在已对齐基础上再微调 Logo，例：8px、-0.5vw
+
+       【上下 · 只挪 Logo（黑条内）、标题不动】
+       --logo-offset-y
+         → 正值向下、负值向上，例：4px、-0.3vh
+       #header-content 的 align-items
+         → 改 center / flex-start / flex-end 可整体改变 Logo 在黑条里的垂直对齐
+
+       【大小 · Logo 缩放】
+       .frin-logo 的 height: clamp(最小, 首选, 最大)
+         → 中间项 14vh 随窗口变；顶栏高度见 #header-bar 的 height: 20vh
+
+       【上下 · 大标题整块（不是 Logo）】
+       .title-overlay 的 justify-content
+         → center=竖直居中 flex-start=靠上（与 Logo 无联动）
+    =================================================== */
+    :root {
+      --content-inset-left: 3%;
+      --logo-offset-x: -35px;
+      --logo-offset-y: 0;
+    }
+
     /* ===== body：页面背景渐变，锁死视口，禁止滚动 ===== */
     body {
-      background: linear-gradient(to bottom, #585858, #c64aef); /* 可调整：页面背景渐变色，上→下 */
+      background: linear-gradient(to bottom, #585858, #c64aef); /* ：页面背景渐变色，上→下 */
       width: 100vw;
       height: 100vh;
       overflow: hidden;
@@ -35,7 +68,7 @@
     #header-bar {
       position: relative;
       width: 100%;
-      height: 20vh;         /* 可调整：顶部黑条高度 */
+      height: 19vh;         /* 可调整：顶部黑条高度 */
       background: #000000;  /* 可调整：顶部黑条背景颜色 */
       flex-shrink: 0;
       opacity: 0;           /* 进场动画初始值，不要改这里 */
@@ -43,14 +76,14 @@
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1); /* 这里设置黑条淡入过渡，贝塞尔曲线使透明度变化更平滑 */
     }
 
-    /* 内容层：绝对定位在黑条上，独立控制透明度 */
+    /* 内容层：Logo + 导航；align-items 控制 Logo 在黑条内的上下对齐 */
     #header-content {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
       display: flex;
-      align-items: center;
-      padding: 0 2.5vw;     /* 可调整：顶部导航左右内边距 */
+      align-items: center;  /* 可调整：Logo 垂直 — center | flex-start | flex-end */
+      padding: 0 2.5vw 0 var(--content-inset-left); /* 左内边距 = 标题左起点，见 :root */
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,17 +94,21 @@
       pointer-events: all;
     }
 
-    /* FRIN Logo */
+    /* FRIN Logo：水平对齐见 --content-inset-left；仅 Logo 微调见 --logo-offset-* */
     .frin-logo {
-      height: 70%;          /* 可调整：Logo 在黑条中的高度占比 */
+      height: clamp(22px, 14vh, 130px); /* 可调整：Logo 大小（最小, 随视口, 最大） */
       width: auto;
-      margin-right: 3vw;    /* 可调整：Logo 与导航链接之间的间距 */
+      flex-shrink: 0;
+      display: block;
+      margin-left: var(--logo-offset-x);  /* 可调整：只挪 Logo 左右，不改标题 */
+      margin-top: var(--logo-offset-y);   /* 可调整：只挪 Logo 上下，不改标题 */
     }
 
     /* 顶部导航链接组 */
     nav {
       display: flex;
       gap: 4.5vw;           /* 可调整：导航链接之间的间距 */
+      margin-left: auto;    /* 导航靠右，不与 Logo 争左侧对齐 */
     }
 
     nav a {
@@ -124,7 +161,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center; /* 可调整：标题垂直对齐方式 flex-start=顶部 center=居中 */
-      padding-left: 3%;        /* 可调整：标题距离左边缘的距离 */
+      padding-left: var(--content-inset-left); /* 与 Logo 左对齐，改 :root 里同一变量 */
       opacity: 0;
       pointer-events: none;
       z-index: 105; /* 须为 body 同级层叠，高于 #header-bar(100) */
@@ -280,7 +317,7 @@
       width: 100%;
       background: #000000;    /* 可调整：底部黑条背景颜色 */
       padding: 0 3vw;         /* 可调整：底部黑条左右内边距 */
-      height: 15vh;           /* 可调整：底部黑条高度 */
+      height: 12vh;           /* 可调整：底部黑条高度 */
       display: flex;
       justify-content: flex-end; /* 可调整：底部内容水平对齐，flex-end=靠右 flex-start=靠左 center=居中 */
       align-items: center;
