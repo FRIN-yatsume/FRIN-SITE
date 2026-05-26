@@ -117,7 +117,7 @@
 
     /* ===== 左侧大标题覆盖层 ===== */
     .title-overlay {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0;
       width: 48%;           /* 可调整：标题覆盖层宽度（占场景宽度的比例） */
       height: 100%;
@@ -127,7 +127,7 @@
       padding-left: 3%;        /* 可调整：标题距离左边缘的距离 */
       opacity: 0;
       pointer-events: none;
-      z-index: 101; /* 保证标题文字置于页面顶层，高于顶部黑条 */
+      z-index: 105; /* 须为 body 同级层叠，高于 #header-bar(100) */
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -321,6 +321,15 @@
     </div>
   </div>
 
+  <!-- 大标题覆盖层（body 同级，才能压过 #header-bar） -->
+  <div class="title-overlay" id="title-overlay">
+    <span class="title-line"><span class="initial">F</span>uji</span>
+    <span class="title-line"><span class="initial">R</span>esearch</span>
+    <span class="title-line"><span class="initial">I</span>nstitute</span>
+    <span class="title-of">of</span>
+    <span class="title-line"><span class="initial">N</span>euroscience</span>
+  </div>
+
   <!-- ===== 场景容器 ===== -->
   <div class="scene-container" id="scene-container">
     <div class="scene" id="scene">
@@ -329,15 +338,6 @@
       <video id="intro-video" muted playsinline preload="auto">
         <source src="asset/MainLoadingBottom.mp4" type="video/mp4">
       </video>
-
-      <!-- 大标题覆盖层 -->
-      <div class="title-overlay" id="title-overlay">
-        <span class="title-line"><span class="initial">F</span>uji</span>
-        <span class="title-line"><span class="initial">R</span>esearch</span>
-        <span class="title-line"><span class="initial">I</span>nstitute</span>
-        <span class="title-of">of</span>
-        <span class="title-line"><span class="initial">N</span>euroscience</span>
-      </div>
 
       <!-- =====================================================
            热区层：视频结束后激活
