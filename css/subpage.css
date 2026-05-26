@@ -1,0 +1,60 @@
+/* ===== 子页面：可滚动 + sticky 顶底栏 + 滚动驱动顶栏缩短 ===== */
+
+body.subpage {
+  background: linear-gradient(to bottom, #585858, #c64aef);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.subpage #header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-bar-height, var(--header-height-expanded));
+  /* fixed 替代 sticky，避免高度每帧变化时的合成层重影 */
+}
+
+body.subpage #header-content {
+  pointer-events: all;
+}
+
+body.subpage main.page-content {
+  flex: 1;
+  padding-top: var(--header-bar-height, var(--header-height-expanded));
+  min-height: calc(100vh - var(--header-height-expanded) + 120px);
+}
+
+body.subpage #footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: var(--footer-offset-y);
+  transition: opacity 0.2s ease, height 0.2s ease, padding 0.2s ease;
+}
+
+/* 非 questionnaire 页：下滚后隐藏底栏 */
+body.subpage:not(.subpage-questionnaire)[data-footer="hidden"] #footer {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.maintenance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 0;
+  min-height: inherit;
+}
+
+.maintenance p {
+  font-family: 'Times New Roman', serif;
+  font-size: clamp(12px, 1.2vw, 22px);
+  color: #5a585b;
+  letter-spacing: 0.05em;
+}
