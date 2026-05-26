@@ -2,6 +2,7 @@
 
 body.subpage {
   background: linear-gradient(to bottom, #585858, #c64aef);
+  background-attachment: fixed; /* 渐变相对视口，不随正文变长而拉伸 */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -30,26 +31,27 @@ body.subpage #footer {
   position: sticky;
   bottom: 0;
   margin-top: var(--footer-offset-y);
-  transition: opacity 0.2s ease, height 0.2s ease, padding 0.2s ease;
+  z-index: 100;
+  will-change: transform;
 }
 
-/* 非 questionnaire 页：下滚后隐藏底栏 */
-body.subpage:not(.subpage-questionnaire)[data-footer="hidden"] #footer {
-  height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  opacity: 0;
+/* 非 questionnaire 页：下滚时由 subpage-chrome.js 驱动 translateY 卷出视口 */
+body.subpage:not(.subpage-questionnaire) #footer {
   overflow: hidden;
-  pointer-events: none;
-  visibility: hidden;
 }
 
 .maintenance {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5vh 0;
+  gap: clamp(2rem, 6vh, 4.5rem);
+  padding: 8vh 5vw 12vh;
   min-height: inherit;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .maintenance p {
@@ -57,4 +59,8 @@ body.subpage:not(.subpage-questionnaire)[data-footer="hidden"] #footer {
   font-size: clamp(12px, 1.2vw, 22px);
   color: #5a585b;
   letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1.75;
+  margin: 0;
+  width: 100%;
 }
