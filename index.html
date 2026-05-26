@@ -44,10 +44,41 @@
        .title-overlay 的 justify-content
          → center=竖直居中 flex-start=靠上（与 Logo 无联动）
     =================================================== */
+    /* ===================================================
+       顶栏导航 位置调整说明（右对齐，链接向左延展）
+
+       【右对齐点 · 最右链接距屏幕右缘】
+       --nav-align-right
+         → 变大 = 整组导航往左移；变小 = 更贴右（右侧呼吸变小）
+         → 例：3% | 48px | 3vw
+
+       【链接间距 · 相邻两个导航词之间的空隙】
+       --nav-link-gap
+         → 变大 = 更松散；变小 = 更紧凑
+         → 例：4.5vw | clamp(32px, 5vw, 96px)
+
+       【字间距 · 每个链接内部的字母间距】
+       --nav-letter-spacing
+         → 见 nav a，与 --nav-link-gap 无关
+
+       【向左延展上限 · 导航区域左边界】
+       --nav-max-left
+         → 默认 50%：导航不伸入左半屏（避免压标题）
+         → 改为 0 或去掉 nav 的 left 属性 = 可一直向左延
+
+       【上下 · 只挪导航、Logo 不动】
+       --nav-offset-y
+         → 正值向下、负值向上
+    =================================================== */
     :root {
       --content-inset-left: 3%;
       --logo-offset-x: -35px;
       --logo-offset-y: 0;
+      --nav-align-right: 8%;
+      --nav-link-gap: 15vw;
+      --nav-letter-spacing: 0.04em;
+      --nav-offset-y: 18px;
+      --nav-max-left: 20%;
     }
 
     /* ===== body：页面背景渐变，锁死视口，禁止滚动 ===== */
@@ -83,7 +114,7 @@
       width: 100%; height: 100%;
       display: flex;
       align-items: center;  /* 可调整：Logo 垂直 — center | flex-start | flex-end */
-      padding: 0 2.5vw 0 var(--content-inset-left); /* 左内边距 = 标题左起点，见 :root */
+      padding: 0 0 0 var(--content-inset-left); /* 左=标题起点；右侧留白由 --nav-align-right 控制 */
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
@@ -104,11 +135,19 @@
       margin-top: var(--logo-offset-y);   /* 可调整：只挪 Logo 上下，不改标题 */
     }
 
-    /* 顶部导航链接组 */
+    /* 顶部导航：从右对齐点向左排布，见 :root 中 --nav-* 变量 */
     nav {
+      position: absolute;
+      top: 0;
+      right: var(--nav-align-right);  /* 可调整：右对齐点，见 :root */
+      left: var(--nav-max-left);      /* 可调整：向左延展上限，见 :root */
+      height: 100%;
       display: flex;
-      gap: 4.5vw;           /* 可调整：导航链接之间的间距 */
-      margin-left: auto;    /* 导航靠右，不与 Logo 争左侧对齐 */
+      flex-direction: row;
+      justify-content: flex-end;        /* 整组贴右，contact us 在最右 */
+      align-items: center;
+      gap: var(--nav-link-gap);       /* 可调整：链接间距，见 :root */
+      margin-top: var(--nav-offset-y);  /* 可调整：只挪导航上下，见 :root */
     }
 
     nav a {
@@ -117,8 +156,9 @@
       font-size: clamp(10px, 1.2vw, 22px);  /* 可调整：导航文字大小（最小值, 视口比例, 最大值） */
       color: #5a585b;                        /* 可调整：导航文字默认颜色 */
       text-decoration: none;
-      letter-spacing: 0.04em;               /* 可调整：导航文字字间距 */
+      letter-spacing: var(--nav-letter-spacing); /* 可调整：字间距，见 :root */
       transition: color 0.3s;
+      white-space: nowrap;
     }
 
     nav a:hover  { color: #c8c8c8; }   /* 可调整：导航文字 hover 颜色 */
