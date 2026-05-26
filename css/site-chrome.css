@@ -26,17 +26,18 @@
   --footer-height-expanded: 12vh;
   --nav-stop-edge: 18px;
 
-  --footer-bg: #000000;
-  --footer-height: var(--footer-height-expanded);
-  --footer-padding-x: var(--right-edge-inset);
-  --footer-offset-y: 10px;
-  --footer-content-justify: flex-end;
+  --footer-bg: #000000;               /* 可调整-布局-底部黑条：背景色 */
+  --footer-height: var(--footer-height-expanded); /* 可调整-布局-底部黑条：高度 */
+  --footer-padding-x: var(--right-edge-inset); /* 可调整-布局-底部黑条：左右内边距 */
+  --footer-offset-y: 10px;            /* 可调整-布局-底部黑条：整体上下，+向下 */
+  --footer-content-justify: flex-end; /* 可调整-文字-布局：questionnaire 水平对齐 */
+  --footer-hide-scroll-mult: 3.5;       /* 可调整-动画-滚动：footer 卷出速度，相对 footer 高度的倍数（完全隐藏需滚动的距离）；越大越慢，越小越快 */
 
-  --questionnaire-color: #c64aef;
-  --questionnaire-hover-color: #ffffff;
-  --questionnaire-letter-spacing: 0.04em;
-  --questionnaire-top-gap: 18px;
-  --questionnaire-offset-x: 18px;
+  --questionnaire-color: #c64aef; /* 可调整-文字-颜色：footer questionnaire 字色 */
+  --questionnaire-hover-color: #ffffff; /* 可调整-文字-颜色：footer questionnaire hover */
+  --questionnaire-letter-spacing: 0.04em; /* 可调整-文字-字间距：footer questionnaire */
+  --questionnaire-top-gap: 18px; /* 可调整-文字-布局：questionnaire 顶距底栏 */
+  --questionnaire-offset-x: 18px; /* 可调整-文字-布局：questionnaire 左右，+向右 */
 }
 
 #header-bar {
@@ -88,15 +89,15 @@ nav a {
   font-family: 'LibreBaskerville', 'Libre Baskerville', serif;
   font-weight: bold;
   font-size: clamp(10px, 1.3vw, 48px);
-  color: #5a585b;
+  color: #5a585b; /* 可调整-文字-颜色：顶栏导航字色 */
   text-decoration: none;
   letter-spacing: var(--nav-letter-spacing);
   transition: color 0.3s;
   white-space: nowrap;
 }
 
-nav a:hover  { color: #c8c8c8; }
-nav a.active { color: #d6d6d6; }
+nav a:hover  { color: #c8c8c8; } /* 可调整-文字-颜色：顶栏导航 hover */
+nav a.active { color: #d6d6d6; } /* 可调整-文字-颜色：顶栏导航当前页 */
 
 #footer {
   width: 100%;

@@ -40,6 +40,30 @@ body.subpage:not(.subpage-questionnaire) #footer {
   overflow: hidden;
 }
 
+/*
+ * ===== 【总入口】子页正文外观：改这里即可作用于全部子页 =====
+ * 各页 body 仍有 subpage-xxx 类名，仅在需要「单页例外」时，在下方对应块里写变量。
+ */
+body.subpage {
+  --page-content-color: #000000; /* 可调整-文字-颜色：全部子页正文 */
+  --page-content-font-size: clamp(12px, 1.2vw, 22px); /* 可调整-文字-字号：全部子页正文 */
+  --page-content-letter-spacing: 0.05em; /* 可调整-文字-字间距：全部子页正文 */
+  --page-content-line-height: 1.75; /* 可调整-文字-行高：全部子页正文 */
+  --page-content-text-align: center; /* 可调整-文字-布局：全部子页正文对齐 */
+  --page-content-max-width: 42rem; /* 可调整-文字-布局：全部子页正文区最大宽度 */
+  --page-content-link-color: #000000; /* 可调整-文字-颜色：全部子页正文内链接 */
+  --page-content-link-hover-color: #000000; /* 可调整-文字-颜色：全部子页正文内链接 hover */
+}
+
+/* ----- 单页例外（默认留空；与总入口相同时请勿重复写，否则会盖掉总入口） ----- */
+/* body.subpage-recruit { } */
+/* body.subpage-now { } */
+/* body.subpage-contact { } */
+/* body.subpage-vision { } */
+/* body.subpage-secret { } */
+/* body.subpage-reward { } */
+/* body.subpage-questionnaire { } */
+
 .maintenance {
   display: flex;
   flex-direction: column;
@@ -49,18 +73,29 @@ body.subpage:not(.subpage-questionnaire) #footer {
   padding: 8vh 5vw 12vh;
   min-height: inherit;
   width: 100%;
-  max-width: 42rem;
+  max-width: var(--page-content-max-width);
   margin: 0 auto;
   box-sizing: border-box;
 }
 
 .maintenance p {
   font-family: 'LibreBaskerville', 'Libre Baskerville', serif;
-  font-size: clamp(12px, 1.2vw, 22px);
-  color: #5a585b;
-  letter-spacing: 0.05em;
-  text-align: center;
-  line-height: 1.75;
+  font-size: var(--page-content-font-size);
+  color: var(--page-content-color);
+  letter-spacing: var(--page-content-letter-spacing);
+  text-align: var(--page-content-text-align);
+  line-height: var(--page-content-line-height);
   margin: 0;
   width: 100%;
+}
+
+.page-content a,
+.maintenance a {
+  color: var(--page-content-link-color);
+  transition: color 0.3s;
+}
+
+.page-content a:hover,
+.maintenance a:hover {
+  color: var(--page-content-link-hover-color);
 }
