@@ -12,8 +12,9 @@
 
 :root {
   --content-inset-left: 2%;
-  --logo-offset-x: -35px;
-  --logo-offset-y: 0;
+  --logo-offset-x: -35px;             /* 可调整-精灵-布局：Logo 单独左右，不改标题 */
+  --logo-offset-y: 0;                 /* 可调整-精灵-布局：Logo 单独上下，+向下 */
+  --logo-scroll-scale-min: 0.7;       /* 可调整-精灵-缩放：子页下滚顶栏收短时 Logo 最小比例，1=不缩，0.7=约七成 */
   --right-edge-inset: 8.5%;
   --nav-align-right: var(--right-edge-inset);
   --nav-link-gap: 15vw;
@@ -62,12 +63,14 @@
 }
 
 .frin-logo {
-  height: clamp(22px, 14vh, 130px);
+  height: clamp(22px, 14vh, 130px); /* 可调整-精灵-缩放：Logo 高度 clamp */
   width: auto;
   flex-shrink: 0;
   display: block;
   margin-left: var(--logo-offset-x);
   margin-top: var(--logo-offset-y);
+  transform: scale(var(--logo-scale, 1));
+  transform-origin: left center;
 }
 
 nav {

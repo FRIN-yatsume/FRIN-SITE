@@ -8,13 +8,28 @@
   const footer = document.getElementById('footer');
   const isQuestionnaire = body.classList.contains('subpage-questionnaire');
 
-  const rootStyle = getComputedStyle(document.documentElement);
+  let rootStyle = getComputedStyle(document.documentElement);
 
   const stopEdge = parseFloat(rootStyle.getPropertyValue('--nav-stop-edge')) || 18;
 
   function readCssPositiveNumber(varName, fallback) {
     const n = parseFloat(rootStyle.getPropertyValue(varName));
     return Number.isFinite(n) && n > 0 ? n : fallback;
+  }
+
+  function readLogoScrollScaleMin() {
+    const n = parseFloat(rootStyle.getPropertyValue('--logo-scroll-scale-min'));
+    if (!Number.isFinite(n) || n <= 0) return 0.7;
+    return Math.min(1, n);
+  }
+
+  function logoScaleForScroll(scrollY) {
+    if (!metrics) return 1;
+    const { scrollRange } = metrics;
+    if (scrollRange <= 0) return 1;
+    const progress = Math.min(1, scrollY / scrollRange);
+    const minScale = readLogoScrollScaleMin();
+    return 1 - progress * (1 - minScale);
   }
 
   let metrics = null;
@@ -71,6 +86,11 @@
     body.style.setProperty('--header-bar-height', heightPx);
     if (headerBar) headerBar.style.height = heightPx;
 
+    document.documentElement.style.setProperty(
+      '--logo-scale',
+      String(logoScaleForScroll(scrollY))
+    );
+
     if (!isQuestionnaire && footer && footerMetrics) {
       const offsetY = footerOffsetForScroll(scrollY);
       const hidden = offsetY >= footerMetrics.height;
@@ -90,6 +110,7 @@
   }
 
   function remeasure() {
+    rootStyle = getComputedStyle(document.documentElement);
     metrics = measureHeader();
     footerMetrics = measureFooter();
     updateChrome();
