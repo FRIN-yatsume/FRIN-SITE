@@ -14,6 +14,24 @@
       font-weight: normal;
     }
 
+    /* ===== Times New Roman Bold 字体本地加载 ===== */
+    @font-face {
+      font-family: 'TimesNewRomanLocal';
+      src: url('asset/timesbd.ttf') format('truetype');
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    /* ===== Verdana 字体本地加载（标题用，of 除外） ===== */
+    @font-face {
+      font-family: 'VerdanaLocal';
+      src: url('asset/verdanaz.ttf') format('truetype');
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
     /* ===== 全局重置 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -41,6 +59,8 @@
          → 中间项 14vh 随窗口变；顶栏高度见 #header-bar 的 height: 20vh
 
        【上下 · 大标题整块（不是 Logo）】
+       --title-block-offset-y
+         → 在 justify-content 对齐基础上整体下移/上移，正值向下、负值向上，例：10px、-2vh
        .title-overlay 的 justify-content
          → center=竖直居中 flex-start=靠上（与 Logo 无联动）
     =================================================== */
@@ -70,15 +90,59 @@
        --nav-offset-y
          → 正值向下、负值向上
     =================================================== */
+    /* ===================================================
+       大标题「of」/「Neuroscience」单独位置（不影响 Fuji 等其它行）
+
+       【of · 左右】--title-of-offset-x  正值向右、负值向左
+       【of · 上下】--title-of-offset-y  正值向下、负值向上
+       【of · 额外倾斜】--title-of-skew-x
+         → 在 font-style:italic 之上再用 skew 微调，不能叠两层 italic
+         → 0deg=不额外倾斜；负值更斜（例 -6deg、-10deg）；正值反向
+       【of · 倾斜锚点】--title-of-skew-origin
+         → 拧斜时的支点，例 left center | 0.2em center
+
+       【Neuroscience · 左右】--title-neuro-offset-x
+       【Neuroscience · 上下】--title-neuro-offset-y
+         → 仅作用于最后一行，例：8px、-0.5vw、1vh
+    =================================================== */
     :root {
-      --content-inset-left: 3%;
+      --content-inset-left: 2%;
+      --title-block-offset-y: 28px;   /* 可调整：大标题整块上下微调，见上方说明 */
       --logo-offset-x: -35px;
       --logo-offset-y: 0;
-      --nav-align-right: 8%;
+      --right-edge-inset: 8.5%;         /* 可调整：右侧公共边距（contact us / questionnaire 共用，保证右侧对称） */
+      --nav-align-right: var(--right-edge-inset);
       --nav-link-gap: 15vw;
-      --nav-letter-spacing: 0.04em;
-      --nav-offset-y: 18px;
+      --nav-letter-spacing: 0.03em;
+      --nav-offset-y: 0px;
       --nav-max-left: 20%;
+      --title-of-offset-x: 15px;
+      --title-of-offset-y: -24px;
+      --title-of-skew-x: -9deg;           /* 可调整：of 额外倾斜角度 */
+      --title-of-skew-origin: left center; /* 可调整：of 倾斜支点 */
+      --title-neuro-offset-x: -8px;
+      --title-neuro-offset-y: -50px;
+
+      /* ===================================================
+         Questionnaire（底部链接）颜色 & 位置变量
+
+         用法：
+         - 调“黑条整体”：--footer-height / --footer-offset-y
+         - 调“questionnaire 垂直”：--questionnaire-top-gap（链接顶 ↔ 黑条顶，0=贴顶）
+         - 调“questionnaire 水平”：--right-edge-inset + --questionnaire-offset-x
+         - 调“颜色”：--questionnaire-color / --questionnaire-hover-color
+         =================================================== */
+      --footer-bg: #000000;                 /* 可调整：底部黑条背景色 */
+      --footer-height: 12vh;                /* 可调整：底部黑条高度 */
+      --footer-padding-x: var(--right-edge-inset); /* 可调整：左右内边距（右侧与 contact us 共用同一基准） */
+      --footer-offset-y: 10px;               /* 可调整：底部黑条整体上下微调（正值向下） */
+      --footer-content-justify: flex-end;   /* 可调整：questionnaire 水平位置 flex-end=右 / center=中 / flex-start=左 */
+
+      --questionnaire-color: #c64aef;       /* 可调整：questionnaire 默认颜色 */
+      --questionnaire-hover-color: #ffffff; /* 可调整：questionnaire hover 颜色 */
+      --questionnaire-letter-spacing: 0.04em; /* 可调整：字间距 */
+      --questionnaire-top-gap: 10px;        /* 可调整：链接顶部距 footer 黑条顶部的距离（0=完全贴顶） */
+      --questionnaire-offset-x: 18px;        /* 可调整：questionnaire 文字左右微调（正值向右） */
     }
 
     /* ===== body：页面背景渐变，锁死视口，禁止滚动 ===== */
@@ -151,9 +215,9 @@
     }
 
     nav a {
-      font-family: 'Times New Roman', serif; /* 可调整：导航字体 */
+      font-family: 'TimesNewRomanLocal', 'Times New Roman', serif; /* 可调整：导航字体 */
       font-weight: bold;
-      font-size: clamp(10px, 1.2vw, 22px);  /* 可调整：导航文字大小（最小值, 视口比例, 最大值） */
+      font-size: clamp(10px, 1.3vw, 48px);  /* 可调整：导航文字大小（最小值, 视口比例, 最大值） */
       color: #5a585b;                        /* 可调整：导航文字默认颜色 */
       text-decoration: none;
       letter-spacing: var(--nav-letter-spacing); /* 可调整：字间距，见 :root */
@@ -162,7 +226,7 @@
     }
 
     nav a:hover  { color: #c8c8c8; }   /* 可调整：导航文字 hover 颜色 */
-    nav a.active { color: #ff31eb; }   /* 可调整：当前页导航高亮颜色 */
+    nav a.active { color: #d6d6d6; }   /* 可调整：当前页导航高亮颜色 */
 
     /* ===== 场景容器：剩余视口高度，居中放置内容 ===== */
     .scene-container {
@@ -202,6 +266,7 @@
       flex-direction: column;
       justify-content: center; /* 可调整：标题垂直对齐方式 flex-start=顶部 center=居中 */
       padding-left: var(--content-inset-left); /* 与 Logo 左对齐，改 :root 里同一变量 */
+      transform: translateY(var(--title-block-offset-y)); /* 可调整：整块上下微调，见 :root */
       opacity: 0;
       pointer-events: none;
       z-index: 105; /* 须为 body 同级层叠，高于 #header-bar(100) */
@@ -210,12 +275,12 @@
 
     /* 标题每一行（Fuji / Research / Institute / Neuroscience） */
     .title-line {
-      font-family: 'Verdana', sans-serif; /* 可调整：标题主字体 */
+      font-family: 'VerdanaLocal', Verdana, sans-serif; /* 可调整：标题主字体 */
       font-weight: bold;
       font-style: italic;
-      font-size: clamp(16px, 5.8vw, 112px); /* 可调整：标题文字大小（最小值, 视口比例, 最大值） */
+      font-size: clamp(16px, 5.7vw, 112px); /* 可调整：标题文字大小（最小值, 视口比例, 最大值） */
       color: #ffffff;                        /* 可调整：标题文字颜色（首字母以外） */
-      line-height: 1.18;                     /* 可调整：标题行间距 */
+      line-height: 1.63;                     /* 可调整：标题行间距 */
       display: block;
     }
 
@@ -224,15 +289,25 @@
       color: #ff31eb; /* 可调整：标题首字母高亮颜色 */
     }
 
-    /* 标题中的 "of" 行，使用衬线字体 */
+    /* 标题中的 "of" 行；位置 / 倾斜见 :root 中 --title-of-* */
     .title-of {
       font-family: 'PalatinoLinotype', 'Palatino Linotype', Palatino, serif; /* 可调整：of 字体 */
       font-weight: normal;
       font-style: italic;
-      font-size: clamp(13px, 4.5vw, 86px); /* 可调整：of 文字大小（最小值, 视口比例, 最大值） */
+      font-size: clamp(13px, 5vw, 120px); /* 可调整：of 文字大小（最小值, 视口比例, 最大值） */
       color: #ffffff;                       /* 可调整：of 文字颜色 */
       line-height: 1.18;                    /* 可调整：of 行间距 */
       display: block;
+      margin-left: var(--title-of-offset-x);  /* 可调整：只挪 of 左右，见 :root */
+      margin-top: var(--title-of-offset-y);   /* 可调整：只挪 of 上下，见 :root */
+      transform: skewX(var(--title-of-skew-x)); /* 可调整：在 italic 上再加倾斜，见 :root */
+      transform-origin: var(--title-of-skew-origin); /* 可调整：倾斜支点，见 :root */
+    }
+
+    /* 标题最后一行 Neuroscience；位置见 :root 中 --title-neuro-offset-* */
+    .title-line-neuro {
+      margin-left: var(--title-neuro-offset-x);  /* 可调整：只挪 Neuroscience 左右 */
+      margin-top: var(--title-neuro-offset-y);   /* 可调整：只挪 Neuroscience 上下 */
     }
 
     /* ===== 热区层：视频结束后 fade in 激活 ===== */
@@ -355,15 +430,16 @@
       position: fixed;
       bottom: 0; left: 0;
       width: 100%;
-      background: #000000;    /* 可调整：底部黑条背景颜色 */
-      padding: 0 3vw;         /* 可调整：底部黑条左右内边距 */
-      height: 12vh;           /* 可调整：底部黑条高度 */
+      background: var(--footer-bg);                 /* 可调整：底部黑条背景颜色 */
+      padding: 0 var(--footer-padding-x);           /* 可调整：底部黑条左右内边距 */
+      height: var(--footer-height);                 /* 可调整：底部黑条高度 */
       display: flex;
-      justify-content: flex-end; /* 可调整：底部内容水平对齐，flex-end=靠右 flex-start=靠左 center=居中 */
-      align-items: center;
+      justify-content: var(--footer-content-justify); /* 可调整：底部内容水平对齐 */
+      align-items: flex-start; /* questionnaire 锚定黑条顶部，见 --questionnaire-top-gap */
       flex-shrink: 0;
       opacity: 0;
       z-index: 100;
+      transform: translateY(var(--footer-offset-y)); /* 可调整：底部黑条整体上下微调 */
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -371,14 +447,16 @@
       font-family: 'Times New Roman', serif;
       font-weight: bold;
       font-size: clamp(10px, 1.2vw, 22px); /* 可调整：底部链接文字大小 */
-      color: #ff31eb;                      /* 可调整：底部链接默认颜色 */
+      color: var(--questionnaire-color);   /* 可调整：底部链接默认颜色 */
       text-decoration: none;
-      letter-spacing: 0.04em;             /* 可调整：底部链接字间距 */
+      letter-spacing: var(--questionnaire-letter-spacing); /* 可调整：底部链接字间距 */
+      margin-top: var(--questionnaire-top-gap); /* 可调整：链接顶 ↔ 黑条顶距离 */
+      transform: translateX(var(--questionnaire-offset-x)); /* 可调整：questionnaire 文字左右微调 */
       transition: color 0.3s;
     }
 
     #footer a:hover {
-      color: #ffffff; /* 可调整：底部链接 hover 颜色 */
+      color: var(--questionnaire-hover-color); /* 可调整：底部链接 hover 颜色 */
     }
 
   </style>
@@ -404,7 +482,7 @@
     <span class="title-line"><span class="initial">R</span>esearch</span>
     <span class="title-line"><span class="initial">I</span>nstitute</span>
     <span class="title-of">of</span>
-    <span class="title-line"><span class="initial">N</span>euroscience</span>
+    <span class="title-line title-line-neuro"><span class="initial">N</span>euroscience</span>
   </div>
 
   <!-- ===== 场景容器 ===== -->
