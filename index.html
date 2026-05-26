@@ -35,122 +35,41 @@
     /* ===== 全局重置 ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ===================================================
-       Logo / 标题 位置调整说明（按需求改下面变量即可）
-
-       【左右 · Logo 与标题一起动】
-       --content-inset-left
-         → Logo 左缘 与 大标题首字（Fuji 的 F）对齐，改一处两边同步
-         → 数值变大 = 一起往右；变小 = 一起往左
-         → 例：3% | 4vw | clamp(16px, 3vw, 56px)
-
-       【左右 · 只挪 Logo、标题不动】
-       --logo-offset-x
-         → 在已对齐基础上再微调 Logo，例：8px、-0.5vw
-
-       【上下 · 只挪 Logo（黑条内）、标题不动】
-       --logo-offset-y
-         → 正值向下、负值向上，例：4px、-0.3vh
-       #header-content 的 align-items
-         → 改 center / flex-start / flex-end 可整体改变 Logo 在黑条里的垂直对齐
-
-       【大小 · Logo 缩放】
-       .frin-logo 的 height: clamp(最小, 首选, 最大)
-         → 中间项 14vh 随窗口变；顶栏高度见 #header-bar 的 height: 20vh
-
-       【上下 · 大标题整块（不是 Logo）】
-       --title-block-offset-y
-         → 在 justify-content 对齐基础上整体下移/上移，正值向下、负值向上，例：10px、-2vh
-       .title-overlay 的 justify-content
-         → center=竖直居中 flex-start=靠上（与 Logo 无联动）
-    =================================================== */
-    /* ===================================================
-       顶栏导航 位置调整说明（右对齐，链接向左延展）
-
-       【右对齐点 · 最右链接距屏幕右缘】
-       --nav-align-right
-         → 变大 = 整组导航往左移；变小 = 更贴右（右侧呼吸变小）
-         → 例：3% | 48px | 3vw
-
-       【链接间距 · 相邻两个导航词之间的空隙】
-       --nav-link-gap
-         → 变大 = 更松散；变小 = 更紧凑
-         → 例：4.5vw | clamp(32px, 5vw, 96px)
-
-       【字间距 · 每个链接内部的字母间距】
-       --nav-letter-spacing
-         → 见 nav a，与 --nav-link-gap 无关
-
-       【向左延展上限 · 导航区域左边界】
-       --nav-max-left
-         → 默认 50%：导航不伸入左半屏（避免压标题）
-         → 改为 0 或去掉 nav 的 left 属性 = 可一直向左延
-
-       【上下 · 导航底 ↔ 黑条底】
-       --nav-bottom-gap
-         → 链接底部距 header 黑条底部的距离（0=完全贴底）
-       --nav-offset-y
-         → 在贴底锚定基础上的整体上下微调（正值向下、负值向上）；Logo 仍用 --logo-offset-y
-    =================================================== */
-    /* ===================================================
-       大标题「of」/「Neuroscience」单独位置（不影响 Fuji 等其它行）
-
-       【of · 左右】--title-of-offset-x  正值向右、负值向左
-       【of · 上下】--title-of-offset-y  正值向下、负值向上
-       【of · 额外倾斜】--title-of-skew-x
-         → 在 font-style:italic 之上再用 skew 微调，不能叠两层 italic
-         → 0deg=不额外倾斜；负值更斜（例 -6deg、-10deg）；正值反向
-       【of · 倾斜锚点】--title-of-skew-origin
-         → 拧斜时的支点，例 left center | 0.2em center
-
-       【Neuroscience · 左右】--title-neuro-offset-x
-       【Neuroscience · 上下】--title-neuro-offset-y
-         → 仅作用于最后一行，例：8px、-0.5vw、1vh
-    =================================================== */
     :root {
-      --content-inset-left: 2%;
-      --title-block-offset-y: 28px;   /* 可调整：大标题整块上下微调，见上方说明 */
-      --logo-offset-x: -35px;
-      --logo-offset-y: 0;
-      --right-edge-inset: 8.5%;         /* 可调整：右侧公共边距（contact us / questionnaire 共用，保证右侧对称） */
+      --content-inset-left: 2%;           /* 可调整-文字-布局：标题与 Logo 共用左缩进，变大→右移 */
+      --title-block-offset-y: 28px;       /* 可调整-文字-布局：大标题整块上下，+向下 */
+      --logo-offset-x: -35px;             /* 可调整-精灵-布局：Logo 单独左右，不改标题 */
+      --logo-offset-y: 0;                 /* 可调整-精灵-布局：Logo 单独上下，+向下 */
+      --right-edge-inset: 8.5%;           /* 可调整-文字-布局：右侧共用边距（nav / questionnaire） */
       --nav-align-right: var(--right-edge-inset);
-      --nav-link-gap: 15vw;
-      --nav-letter-spacing: 0.03em;
-      --nav-bottom-gap: 0px;              /* 可调整：导航链接底 ↔ header 黑条底（0=完全贴底） */
-      --nav-offset-y: -18px;                /* 可调整：导航整体 Y 轴微调（正值向下、负值向上） */
-      --nav-max-left: 20%;
-      --title-of-offset-x: 15px;
-      --title-of-offset-y: -24px;
-      --title-of-skew-x: -9deg;           /* 可调整：of 额外倾斜角度 */
-      --title-of-skew-origin: left center; /* 可调整：of 倾斜支点 */
-      --title-neuro-offset-x: -8px;
-      --title-neuro-offset-y: -50px;
+      --nav-link-gap: 15vw;               /* 可调整-文字-布局：导航链接间距 */
+      --nav-letter-spacing: 0.03em;       /* 可调整-文字-字间距：导航链接字间距 */
+      --nav-bottom-gap: 0px;              /* 可调整-文字-布局：导航底距顶栏底，0=贴底 */
+      --nav-offset-y: -18px;              /* 可调整-文字-布局：导航整体上下，+向下 */
+      --nav-max-left: 20%;                /* 可调整-文字-布局：导航左边界，防压标题 */
+      --title-of-offset-x: 15px;          /* 可调整-文字-布局：of 左右，+向右 */
+      --title-of-offset-y: -24px;         /* 可调整-文字-布局：of 上下，+向下 */
+      --title-of-skew-x: -9deg;           /* 可调整-文字-变换：of 额外倾斜角，负值更斜 */
+      --title-of-skew-origin: left center; /* 可调整-文字-变换：of 倾斜支点 */
+      --title-neuro-offset-x: -8px;       /* 可调整-文字-布局：Neuro 左右，+向右 */
+      --title-neuro-offset-y: -50px;      /* 可调整-文字-布局：Neuro 上下，+向下 */
 
-      /* ===================================================
-         Questionnaire（底部链接）颜色 & 位置变量
+      --footer-bg: #000000;               /* 可调整-布局-底部黑条：背景色 */
+      --footer-height: 12vh;              /* 可调整-布局-底部黑条：高度 */
+      --footer-padding-x: var(--right-edge-inset); /* 可调整-布局-底部黑条：左右内边距 */
+      --footer-offset-y: 10px;            /* 可调整-布局-底部黑条：整体上下，+向下 */
+      --footer-content-justify: flex-end; /* 可调整-文字-布局：questionnaire 水平对齐 */
 
-         用法：
-         - 调“黑条整体”：--footer-height / --footer-offset-y
-         - 调“questionnaire 垂直”：--questionnaire-top-gap（链接顶 ↔ 黑条顶，0=贴顶）
-         - 调“questionnaire 水平”：--right-edge-inset + --questionnaire-offset-x
-         - 调“颜色”：--questionnaire-color / --questionnaire-hover-color
-         =================================================== */
-      --footer-bg: #000000;                 /* 可调整：底部黑条背景色 */
-      --footer-height: 12vh;                /* 可调整：底部黑条高度 */
-      --footer-padding-x: var(--right-edge-inset); /* 可调整：左右内边距（右侧与 contact us 共用同一基准） */
-      --footer-offset-y: 10px;               /* 可调整：底部黑条整体上下微调（正值向下） */
-      --footer-content-justify: flex-end;   /* 可调整：questionnaire 水平位置 flex-end=右 / center=中 / flex-start=左 */
-
-      --questionnaire-color: #c64aef;       /* 可调整：questionnaire 默认颜色 */
-      --questionnaire-hover-color: #ffffff; /* 可调整：questionnaire hover 颜色 */
-      --questionnaire-letter-spacing: 0.04em; /* 可调整：字间距 */
-      --questionnaire-top-gap: 18px;        /* 可调整：链接顶部距 footer 黑条顶部的距离（0=完全贴顶） */
-      --questionnaire-offset-x: 18px;        /* 可调整：questionnaire 文字左右微调（正值向右） */
+      --questionnaire-color: #c64aef;       /* 可调整-文字-颜色：questionnaire 字色 */
+      --questionnaire-hover-color: #ffffff; /* 可调整-文字-颜色：questionnaire hover 字色 */
+      --questionnaire-letter-spacing: 0.04em; /* 可调整-文字-字间距：questionnaire 字间距 */
+      --questionnaire-top-gap: 18px;        /* 可调整-文字-布局：链接顶距底栏顶，0=贴顶 */
+      --questionnaire-offset-x: 18px;       /* 可调整-文字-布局：questionnaire 左右，+向右 */
     }
 
     /* ===== body：页面背景渐变，锁死视口，禁止滚动 ===== */
     body {
-      background: linear-gradient(to bottom, #585858, #c64aef); /* ：页面背景渐变色，上→下 */
+      background: linear-gradient(to bottom, #585858, #c64aef); /* 可调整-文字-颜色：页面背景渐变，上→下 */
       width: 100vw;
       height: 100vh;
       overflow: hidden;
@@ -158,79 +77,71 @@
       flex-direction: column;
     }
 
-    /* ===================================================
-       顶部 header：分两层
-       - #header-bar    ：黑色条背景，BAR_KEYFRAMES 控制进场
-       - #header-content：logo + 导航文字，TITLE_KEYFRAMES 控制进场
-    =================================================== */
+    /* ===== 顶部 header：#header-bar 背景层 + #header-content 内容层 ===== */
     #header-bar {
       position: relative;
       width: 100%;
-      height: 19vh;         /* 可调整：顶部黑条高度 */
-      background: #000000;  /* 可调整：顶部黑条背景颜色 */
+      height: 19vh;         /* 可调整-布局-顶部黑条：高度 */
+      background: #000000;  /* 可调整-布局-顶部黑条：背景色 */
       flex-shrink: 0;
-      opacity: 0;           /* 进场动画初始值，不要改这里 */
+      opacity: 0;           /* 说明：进场动画初值，勿改 */
       z-index: 100;
-      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1); /* 这里设置黑条淡入过渡，贝塞尔曲线使透明度变化更平滑 */
+      transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1); /* 可调整-动画-时长：顶栏淡入 */
     }
 
-    /* 内容层：Logo + 导航；align-items 控制 Logo 在黑条内的上下对齐 */
     #header-content {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
       display: flex;
-      align-items: center;  /* 可调整：Logo 垂直 — center | flex-start | flex-end */
-      padding: 0 0 0 var(--content-inset-left); /* 左=标题起点；右侧留白由 --nav-align-right 控制 */
+      align-items: center;  /* 可调整-精灵-布局：Logo 在黑条内垂直对齐 */
+      padding: 0 0 0 var(--content-inset-left);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* 进场结束后开启点击 */
     #header-content.interactive {
       pointer-events: all;
     }
 
-    /* FRIN Logo：水平对齐见 --content-inset-left；仅 Logo 微调见 --logo-offset-* */
     .frin-logo {
-      height: clamp(22px, 14vh, 130px); /* 可调整：Logo 大小（最小, 随视口, 最大） */
+      height: clamp(22px, 14vh, 130px); /* 可调整-精灵-缩放：Logo 高度 clamp */
       width: auto;
       flex-shrink: 0;
       display: block;
-      margin-left: var(--logo-offset-x);  /* 可调整：只挪 Logo 左右，不改标题 */
-      margin-top: var(--logo-offset-y);   /* 可调整：只挪 Logo 上下，不改标题 */
+      margin-left: var(--logo-offset-x);
+      margin-top: var(--logo-offset-y);
     }
 
-    /* 顶部导航：从右对齐点向左排布，见 :root 中 --nav-* 变量 */
     nav {
       position: absolute;
       top: 0;
-      right: var(--nav-align-right);  /* 可调整：右对齐点，见 :root */
-      left: var(--nav-max-left);      /* 可调整：向左延展上限，见 :root */
+      right: var(--nav-align-right);
+      left: var(--nav-max-left);
       height: 100%;
       display: flex;
       flex-direction: row;
-      justify-content: flex-end;        /* 整组贴右，contact us 在最右 */
-      align-items: flex-end;            /* 导航锚定黑条底部，见 --nav-bottom-gap */
-      gap: var(--nav-link-gap);       /* 可调整：链接间距，见 :root */
-      padding-bottom: var(--nav-bottom-gap); /* 可调整：链接底 ↔ 黑条底距离 */
-      transform: translateY(var(--nav-offset-y)); /* 可调整：导航整体 Y 轴微调 */
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: var(--nav-link-gap);
+      padding-bottom: var(--nav-bottom-gap);
+      transform: translateY(var(--nav-offset-y));
     }
 
     nav a {
-      font-family: 'TimesNewRomanLocal', 'Times New Roman', serif; /* 可调整：导航字体 */
+      font-family: 'TimesNewRomanLocal', 'Times New Roman', serif; /* 可调整-文字-字体：导航字体族 */
       font-weight: bold;
-      font-size: clamp(10px, 1.3vw, 48px);  /* 可调整：导航文字大小（最小值, 视口比例, 最大值） */
-      color: #5a585b;                        /* 可调整：导航文字默认颜色 */
+      font-size: clamp(10px, 1.3vw, 48px);  /* 可调整-文字-大小：导航字号 clamp */
+      color: #5a585b;                        /* 可调整-文字-颜色：导航字色 */
       text-decoration: none;
-      letter-spacing: var(--nav-letter-spacing); /* 可调整：字间距，见 :root */
+      letter-spacing: var(--nav-letter-spacing);
       transition: color 0.3s;
       white-space: nowrap;
     }
 
-    nav a:hover  { color: #c8c8c8; }   /* 可调整：导航文字 hover 颜色 */
-    nav a.active { color: #d6d6d6; }   /* 可调整：当前页导航高亮颜色 */
+    nav a:hover  { color: #c8c8c8; }   /* 可调整-文字-颜色：导航 hover */
+    nav a.active { color: #d6d6d6; }   /* 可调整-文字-颜色：导航当前页 */
 
     /* ===== 场景容器：剩余视口高度，居中放置内容 ===== */
     .scene-container {
@@ -246,7 +157,7 @@
     .scene {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;  /* 可调整：场景尺寸，默认全屏 */
+      width: 100vw; height: 100vh;  /* 可调整-布局-场景尺寸：视口全屏 */
       overflow: hidden;
       z-index: 0;
     }
@@ -256,7 +167,7 @@
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      object-fit: cover;    /* 可调整：视频填充模式，cover=裁剪填满，contain=留黑边 */
+      object-fit: cover;    /* 可调整-布局-场景尺寸：视频填充 cover/contain */
       display: block;
     }
 
@@ -264,54 +175,52 @@
     .title-overlay {
       position: fixed;
       top: 0; left: 0;
-      width: 48%;           /* 可调整：标题覆盖层宽度（占场景宽度的比例） */
+      width: 48%;           /* 可调整-文字-布局：标题区宽度比例 */
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* 可调整：标题垂直对齐方式 flex-start=顶部 center=居中 */
-      padding-left: var(--content-inset-left); /* 与 Logo 左对齐，改 :root 里同一变量 */
-      transform: translateY(var(--title-block-offset-y)); /* 可调整：整块上下微调，见 :root */
+      justify-content: center; /* 可调整-文字-布局：标题块垂直对齐 */
+      padding-left: var(--content-inset-left);
+      transform: translateY(var(--title-block-offset-y));
       opacity: 0;
       pointer-events: none;
-      z-index: 105; /* 须为 body 同级层叠，高于 #header-bar(100) */
+      z-index: 105; /* 说明：须高于 #header-bar(100) */
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* 标题每一行（Fuji / Research / Institute / Neuroscience） */
     .title-line {
-      font-family: 'VerdanaLocal', Verdana, sans-serif; /* 可调整：标题主字体 */
+      font-family: 'VerdanaLocal', Verdana, sans-serif; /* 可调整-文字-字体：标题字体族 */
       font-weight: bold;
       font-style: italic;
-      font-size: clamp(16px, 5.7vw, 112px); /* 可调整：标题文字大小（最小值, 视口比例, 最大值） */
-      color: #ffffff;                        /* 可调整：标题文字颜色（首字母以外） */
-      line-height: 1.63;                     /* 可调整：标题行间距 */
+      font-size: clamp(16px, 5.7vw, 112px); /* 可调整-文字-大小：标题字号 clamp */
+      color: #ffffff;                        /* 可调整-文字-颜色：标题字色 */
+      line-height: 1.63;                     /* 可调整-文字-行距：标题行距 */
       display: block;
     }
 
     /* 每行开头大写字母（F / R / I / N） */
     .title-line .initial {
-      color: #ff31eb; /* 可调整：标题首字母高亮颜色 */
+      color: #ff31eb; /* 可调整-文字-颜色：标题首字母色 */
     }
 
-    /* 标题中的 "of" 行；位置 / 倾斜见 :root 中 --title-of-* */
     .title-of {
-      font-family: 'PalatinoLinotype', 'Palatino Linotype', Palatino, serif; /* 可调整：of 字体 */
+      font-family: 'PalatinoLinotype', 'Palatino Linotype', Palatino, serif; /* 可调整-文字-字体：of 字体族 */
       font-weight: normal;
       font-style: italic;
-      font-size: clamp(13px, 5vw, 120px); /* 可调整：of 文字大小（最小值, 视口比例, 最大值） */
-      color: #ffffff;                       /* 可调整：of 文字颜色 */
-      line-height: 1.18;                    /* 可调整：of 行间距 */
+      font-size: clamp(13px, 5vw, 120px); /* 可调整-文字-大小：of 字号 clamp */
+      color: #ffffff;                       /* 可调整-文字-颜色：of 字色 */
+      line-height: 1.18;                    /* 可调整-文字-行距：of 行距 */
       display: block;
-      margin-left: var(--title-of-offset-x);  /* 可调整：只挪 of 左右，见 :root */
-      margin-top: var(--title-of-offset-y);   /* 可调整：只挪 of 上下，见 :root */
-      transform: skewX(var(--title-of-skew-x)); /* 可调整：在 italic 上再加倾斜，见 :root */
-      transform-origin: var(--title-of-skew-origin); /* 可调整：倾斜支点，见 :root */
+      margin-left: var(--title-of-offset-x);
+      margin-top: var(--title-of-offset-y);
+      transform: skewX(var(--title-of-skew-x));
+      transform-origin: var(--title-of-skew-origin);
     }
 
-    /* 标题最后一行 Neuroscience；位置见 :root 中 --title-neuro-offset-* */
     .title-line-neuro {
-      margin-left: var(--title-neuro-offset-x);  /* 可调整：只挪 Neuroscience 左右 */
-      margin-top: var(--title-neuro-offset-y);   /* 可调整：只挪 Neuroscience 上下 */
+      margin-left: var(--title-neuro-offset-x);
+      margin-top: var(--title-neuro-offset-y);
     }
 
     /* ===== 热区层：视频结束后 fade in 激活 ===== */
@@ -321,7 +230,7 @@
       width: 100%; height: 100%;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.5s ease; /* 可调整：热区层淡入过渡时长 */
+      transition: opacity 0.5s ease; /* 可调整-动画-时长：热区层淡入 */
       z-index: 20;
     }
 
@@ -330,48 +239,40 @@
       pointer-events: all;
     }
 
-    /* ===================================================
-       内联 SVG 热区：铺满场景，与视频完全对齐
-       ⚠️ 校准模式：fill 和 stroke 已设为可见（红色半透明）
-          校准完成后将 fill / stroke 改回 transparent / none
-    =================================================== */
+    /* ===== 内联 SVG 热区（1920×1080，与视频对齐） ===== */
     .hotspot-svg {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
       overflow: visible;
-      pointer-events: none; /* SVG 容器本身不接收事件，由 shape 单独开启 */
+      pointer-events: none; /* 说明：事件由 .hotspot-shape 接收 */
     }
 
-    /* 热区形状（path / polyline） */
     .hotspot-svg .hotspot-shape {
-      /* ========== 热区可见性：下方两行控制热区显示/隐藏 ==========
-         - 当前为隐藏状态（正式状态）
-         - 需要调试时，注释掉下面两行，解除注释来激活可见样式（第194-196行）
-         ============================================================ */
-      fill: transparent;   /* 热区可见性：完全透明，不遮挡视频 */
-      stroke: none;        /* 热区可见性：无描边 */
+      /* 可调整-热区-可见性：正式=下行；调试=注释下行并启用下方块 */
+      fill: transparent;
+      stroke: none;
 
-      /* 热区可见性：调试模式的临时可见样式（当上面两行被注释时生效）
-      fill: rgba(255, 0, 0, 0.3);      热区可见性：校准时热区填充颜色和透明度
-      stroke: #ff0000;                 热区可见性：校准时热区描边颜色
-      stroke-width: 2;                 热区可见性：校准时热区描边宽度（SVG 单位，相对于 1920 画布）
+      /* 可调整-热区-可见性（调试，取消注释并注释上面两行）：
+      fill: rgba(255, 0, 0, 0.3);
+      stroke: #ff0000;
+      stroke-width: 2;
       */
 
-      pointer-events: all; /* 透明区域也可接收点击，保持开启 */
+      pointer-events: all;
       cursor: pointer;
     }
 
     /* ===== 光点辉光 ===== */
     .glow-point {
       position: fixed;
-      width: 20px;          /* 可调整：光点直径（像素） */
-      height: 20px;         /* 保持圆形 */
+      width: 20px;          /* 可调整-精灵-缩放：光点直径 */
+      height: 20px;
       border-radius: 50%;
-      transform: translate(-50%, -50%); /* 以光点中心为定位锚点，不要改 */
+      transform: translate(-50%, -50%); /* 说明：光点中心锚点，勿改 */
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s ease;   /* 可调整：光点出现/消失过渡时长 */
+      transition: opacity 0.25s ease;   /* 可调整-动画-时长：光点显隐 */
       z-index: 30;
     }
 
@@ -382,9 +283,9 @@
     /* ===== Tooltip（脑区提示框） ===== */
     .tooltip {
       position: fixed;
-      background: rgba(14, 0, 22, 0.9);          /* 可调整：提示框背景色和透明度 */
-      border: 1px solid rgba(198, 74, 239, 0.55); /* 可调整：提示框边框颜色和透明度 */
-      padding: 1% 1.4%;                           /* 可调整：提示框内边距（上下, 左右） */
+      background: rgba(14, 0, 22, 0.9);          /* 可调整-文字-颜色：Tooltip 背景 */
+      border: 1px solid rgba(198, 74, 239, 0.55); /* 可调整-文字-颜色：Tooltip 边框 */
+      padding: 1% 1.4%;                           /* 可调整-文字-布局：Tooltip 内边距 */
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -396,37 +297,37 @@
 
     /* 提示框第一行：脑区英文名（小字） */
     .tooltip .region-name {
-      font-family: 'Times New Roman', serif;     /* 可调整：脑区名字体 */
-      font-size: clamp(7px, 0.65vw, 12px);       /* 可调整：脑区名文字大小 */
-      color: #5a585b;                            /* 可调整：脑区名文字颜色 */
+      font-family: 'Times New Roman', serif;     /* 可调整-文字-字体：脑区名字体族 */
+      font-size: clamp(7px, 0.65vw, 12px);       /* 可调整-文字-大小：脑区名字号 */
+      color: #5a585b;                            /* 可调整-文字-颜色：脑区名字色 */
       text-transform: uppercase;
-      letter-spacing: 0.12em;                    /* 可调整：脑区名字间距 */
+      letter-spacing: 0.12em;                    /* 可调整-文字-字间距：脑区名字间距 */
       display: block;
-      margin-bottom: 0.3em;                      /* 可调整：脑区名与功能词的间距 */
+      margin-bottom: 0.3em;                      /* 可调整-文字-布局：脑区名下行距 */
     }
 
     /* 提示框第二行：功能关键词（大字，品牌色） */
     .tooltip .region-function {
-      font-family: 'Times New Roman', serif;
+      font-family: 'Times New Roman', serif;       /* 可调整-文字-字体：关键词字体族 */
       font-weight: bold;
-      font-size: clamp(11px, 1.05vw, 19px);      /* 可调整：功能关键词文字大小 */
-      color: #ff31eb;                            /* 可调整：功能关键词颜色 */
+      font-size: clamp(11px, 1.05vw, 19px);      /* 可调整-文字-大小：关键词字号 */
+      color: #ff31eb;                            /* 可调整-文字-颜色：关键词字色 */
       display: block;
-      margin-bottom: 0.5em;                      /* 可调整：功能词与链接的间距 */
+      margin-bottom: 0.5em;                      /* 可调整-文字-布局：关键词下行距 */
     }
 
     /* 提示框第三行：跳转链接 */
     .tooltip .region-link {
-      font-family: 'Times New Roman', serif;
-      font-size: clamp(9px, 0.8vw, 14px);        /* 可调整：链接文字大小 */
-      color: #ffffff;                            /* 可调整：链接默认颜色 */
+      font-family: 'Times New Roman', serif;     /* 可调整-文字-字体：链接字体族 */
+      font-size: clamp(9px, 0.8vw, 14px);        /* 可调整-文字-大小：链接字号 */
+      color: #ffffff;                            /* 可调整-文字-颜色：链接字色 */
       text-decoration: none;
       pointer-events: all;
       transition: color 0.25s;
     }
 
     .tooltip .region-link:hover {
-      color: #edc969; /* 可调整：链接 hover 颜色 */
+      color: #edc969; /* 可调整-文字-颜色：链接 hover */
     }
 
     /* ===== 底部纯黑条 ===== */
@@ -434,33 +335,33 @@
       position: fixed;
       bottom: 0; left: 0;
       width: 100%;
-      background: var(--footer-bg);                 /* 可调整：底部黑条背景颜色 */
-      padding: 0 var(--footer-padding-x);           /* 可调整：底部黑条左右内边距 */
-      height: var(--footer-height);                 /* 可调整：底部黑条高度 */
+      background: var(--footer-bg);
+      padding: 0 var(--footer-padding-x);
+      height: var(--footer-height);
       display: flex;
-      justify-content: var(--footer-content-justify); /* 可调整：底部内容水平对齐 */
-      align-items: flex-start; /* questionnaire 锚定黑条顶部，见 --questionnaire-top-gap */
+      justify-content: var(--footer-content-justify);
+      align-items: flex-start;
       flex-shrink: 0;
       opacity: 0;
       z-index: 100;
-      transform: translateY(var(--footer-offset-y)); /* 可调整：底部黑条整体上下微调 */
+      transform: translateY(var(--footer-offset-y));
       transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     #footer a {
       font-family: 'Times New Roman', serif;
       font-weight: bold;
-      font-size: clamp(10px, 1.2vw, 22px); /* 可调整：底部链接文字大小 */
-      color: var(--questionnaire-color);   /* 可调整：底部链接默认颜色 */
+      font-size: clamp(10px, 1.2vw, 22px); /* 可调整-文字-大小：questionnaire 字号 */
+      color: var(--questionnaire-color);
       text-decoration: none;
-      letter-spacing: var(--questionnaire-letter-spacing); /* 可调整：底部链接字间距 */
-      margin-top: var(--questionnaire-top-gap); /* 可调整：链接顶 ↔ 黑条顶距离 */
-      transform: translateX(var(--questionnaire-offset-x)); /* 可调整：questionnaire 文字左右微调 */
+      letter-spacing: var(--questionnaire-letter-spacing);
+      margin-top: var(--questionnaire-top-gap);
+      transform: translateX(var(--questionnaire-offset-x));
       transition: color 0.3s;
     }
 
     #footer a:hover {
-      color: var(--questionnaire-hover-color); /* 可调整：底部链接 hover 颜色 */
+      color: var(--questionnaire-hover-color);
     }
 
   </style>
@@ -498,14 +399,10 @@
         <source src="asset/MainLoadingBottom.mp4" type="video/mp4">
       </video>
 
-      <!-- =====================================================
-           热区层：视频结束后激活
-           热区可见性：三个内联 SVG 与视频画面完全对齐（同一 1920×1080 坐标系）
-           热区可见性：当前为隐藏状态，调试时修改 CSS 中 .hotspot-shape 的 fill/stroke
-      ====================================================== -->
+      <!-- 可调整-热区-可见性：热区层（1920×1080）；调试见 CSS .hotspot-shape -->
       <div class="hotspot-layer" id="hotspot-layer">
 
-        <!-- 热区可见性：Reward 热区（Nucleus Accumbens，跳转 reward.html） -->
+        <!-- 热区：Reward → reward.html -->
         <svg class="hotspot-svg"
              id="obj-reward"
              viewBox="0 0 1920 1080"
@@ -518,7 +415,7 @@
                 d="M894.28,625.94c10.72,0,110.3,35.23,110.3,35.23l38.3,7.66,6.13-42.89,1.53-70.47-156.26,7.66s-13.79,50.55-9.19,49.02,9.19,13.79,9.19,13.79Z"/>
         </svg>
 
-        <!-- Reward 光点辉光（黄色） -->
+        <!-- 可调整-精灵-颜色：Reward 光点 -->
         <div class="glow-point" id="glow-reward"
              style="background: #edc969;">
         </div>
@@ -531,7 +428,7 @@
         </div>
 
 
-        <!-- 热区可见性：Vision 热区（Visual Cortex，两段 path 合并为一个区域，跳转 vision.html） -->
+        <!-- 热区：Vision → vision.html -->
         <svg class="hotspot-svg"
              id="obj-vision"
              viewBox="0 0 1920 1080"
@@ -546,7 +443,7 @@
                 d="M1443.98,214.52l-125.31,31.8,228.2,154.42s87.32,194.24,44.43,275.43c-5.45,10.32-157.79,135.12-157.79,135.12l137.87,27.57,78.13-52.09,100.45-98.16-7.92-167.4-41.36-101.11-80.28-103.64-70.47-62.81-105.95-39.16Z"/>
         </svg>
 
-        <!-- Vision 光点辉光（黄色） -->
+        <!-- 可调整-精灵-颜色：Vision 光点 -->
         <div class="glow-point" id="glow-vision"
              style="background: #edc969;">
         </div>
@@ -559,7 +456,7 @@
         </div>
 
 
-        <!-- 热区可见性：Secret 热区（隐藏彩蛋：无 tooltip，仅红色光点，跳转 secret.html） -->
+        <!-- 热区：Secret 彩蛋 → secret.html（无 tooltip） -->
         <svg class="hotspot-svg"
              id="obj-secret"
              viewBox="0 0 1920 1080"
@@ -571,7 +468,7 @@
                     points="1153.17 431.38 1050.53 422.19 1024.49 475.81 1073.51 520.23 1108.74 520.23 1153.17 439.04"/>
         </svg>
 
-        <!-- Secret 光点辉光（红色） -->
+        <!-- 可调整-精灵-颜色：Secret 光点 -->
         <div class="glow-point" id="glow-secret"
              style="background: #b2002a;">
         </div>
@@ -757,7 +654,7 @@
         }
         showFinalState();
         headerContent.classList.add('interactive');
-        // 视频结束后 0.2s 激活热区层（可调整：热区激活延迟时间，单位毫秒）
+        // 可调整-动画-时长：热区激活延迟(ms)
         setTimeout(() => hotspotLayer.classList.add('active'), 200);
       });
 
