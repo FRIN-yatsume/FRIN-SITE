@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRIN Questionnaire</title>
+    <style>
+        :root { --primary: #ffffff; --button-text: #333333; --button-text-hover: #333333; --bg: linear-gradient(135deg, #3e3e3e 0%, #5a4765 100%); }/* 从第一个开始是：选项的框的颜色，第二个是背景渐变色 */
+        body { font-family: 'PingFang SC', 'Hiragino Sans', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; padding: 20px; }/* font-family 是字体，background是背景，margin是外边距，display是显示方式，justify-content是水平对齐方式，padding是内边距 */
+        #app { background: rgb(98, 92, 99); width: 100%; max-width: 700px; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; }/* app是整个问卷的容器，background是背景色，width是宽度，max-width是最大宽度，padding是内边距，border-radius是圆角，box-shadow是阴影，position是定位方式 */
+        .logo { display: block; max-width: 180px; margin: 0 auto 30px; }/* logo是顶部和底部的图片，display是显示方式，max-width是最大宽度，margin是外边距 */
+        .question-img { width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; margin: 20px 0; border: 1px solid #eee; }/* question-img是题目中的图片，width是宽度，max-height是最大高度，object-fit是图片适应方式，border-radius是圆角，margin是外边距，border是边框 */
+        .question-video { width: 100%; height: 315px; border-radius: 8px; margin: 20px 0; }/* question-video是题目中的视频，width是宽度，height是高度，border-radius是圆角，margin是外边距 */
+        h2 { color: #333; font-size: 1.2rem; line-height: 1.6; margin-bottom: 25px; }/* h2是题目的文本，color是颜色，font-size是字体大小，line-height是行高，margin-bottom是下外边距 */
+        .btn-list { display: flex; flex-direction: column; gap: 12px; }/* btn-list是选项按钮的容器，display是显示方式，flex-direction是排列方向，gap是间距 */
+        button { padding: 15px; border: 1.5px solid #d7d8da; border-radius: 10px; background: rgb(234, 234, 234); color: var(--button-text); cursor: pointer; transition: all 0.2s; font-size: 1rem; text-align: left; }  /* button是选项按钮，padding是内边距，border是边框，border-radius是圆角，background是背景色，color是文本颜色，cursor是鼠标样式，transition是过渡效果，font-size是字体大小，text-align是文本对齐方式 */
+        button:hover { background: #f7def8; border-color: var(--primary); color: var(--button-text-hover); }/* button:hover是选项按钮的悬停状态，background是背景色，border-color是边框颜色，color是悬停文本颜色 */
+        .nav { display: flex; justify-content: space-between; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }/* nav是导航栏，display是显示方式，justify-content是水平对齐方式，margin-top是上外边距，border-top是上边框，padding-top是上内边距 */
+        .back-btn { background: none; border: none; color: #666; text-decoration: underline; cursor: pointer; }/* back-btn是返回上一题的按钮，background是背景，border是边框，color是颜色，text-decoration是文本装饰，cursor是鼠标样式 */
+        .hidden { display: none; }
+        .news-tag { display: inline-block; background: #333; color: white; padding: 2px 8px; font-size: 0.8rem; margin-bottom: 10px; }/* news-tag是新闻题目的标签，display是显示方式，background是背景色，color是文本颜色，padding是内边距，font-size是字体大小，margin-bottom是下外边距 */
+        .end-text { color: white; font-family: 'Times New Roman', serif; font-style: italic; line-height: 1.4; text-align: center; }/* end-text是结束页面的文本，color是颜色，font-family是字体，font-style是字体样式，line-height是行高，text-align是文本对齐方式 */
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <img id="logo-top" class="logo" src="./frinLogo.png">
+
+    <div id="survey-container">
+        </div>
+
+    <img id="logo-bottom" class="logo hidden" src="./frinLogo.png">
+</div>
+
+<script>
+/**
+ * 问卷核心数据与多语言文案
+ */
+const surveyData = {
+    // 语言基础配置
+    ui: {
+        zh: { back: "返回上一题", next: "继续", input: "请输入...", langTitle: "请选择调查语言 / 言語を選択してください / Select Language" },
+        ja: { back: "戻る", next: "次へ", input: "入力欄", langTitle: "言語を選択してください" },
+        en: { back: "Back", next: "Next", input: "Please enter...", langTitle: "Select Language" }
+    },
+    // 题目列表 (简化版演示结构，包含所有逻辑类型)
+    questions: [
+
+        {
+            id: "q4",
+            text: { zh: "4. 您平均每天使用社交媒体的时间是？", ja: "4. 1日あたりのSNS利用時間は？", en: "4. Average daily social media time?" },
+            options: [
+                { val: 1, text: { zh: "1小时以内", ja: "1時間未満", en: "Less than 1h" }, nextId: "q5" },
+                { val: 2, text: { zh: "1-3小时", ja: "1〜3時間", en: "1~3 hours" }, nextId: "q5" },
+                { val: 3, text: { zh: "3-5小时", ja: "3~5時間", en: "3~5 hours" }, nextId: "q5" },
+                { val: 4, text: { zh: "5小时以上", ja: "5時間以上", en: "More than 5h" }, nextId: "q4a" } // 逻辑：5小时以上触发追加题
+            ]
+        },
+
+        {
+            id: "q4a",
+            text: { zh: "4a. 您是否曾尝试主动减少使用时间？", ja: "4a. 利用時間を減らそうとしたことはありますか？", en: "4a. Tried to reduce usage?" },
+            options: [{ val: 1, text: { zh: "是", ja: "はい", en: "Yes" }, nextId: "q5" }]
+        },
+
+        {
+            id: "q5",
+            text: { zh: "5. 您通常在什么时间段使用社交媒体？（可多选）", ja: "5. SNSを主に使う時間帯はいつですか？（複数選択可）", en: "5. What time of day do you usually use social media? (Select all that apply)" },
+            options: [
+                { val: 1, text: { zh: "早晨起床后", ja: "朝起きた後", en: "After waking up" }, nextId: "q7" },
+                { val: 2, text: { zh: "通勤途中", ja: "通勤途中", en: "During commute" }, nextId: "q7" },
+                { val: 3, text: { zh: "工作/学习间隙", ja: "仕事/勉強の合間", en: "During work/study breaks" }, nextId: "q7" },
+                { val: 4, text: { zh: "睡前", ja: "寝る前", en: "Before bed" }, nextId: "q7" } 
+            ]
+        },
+
+        {
+            id: "q7",
+            // 演出安排逻辑：0.5秒后替换文字
+            specialEffect: "replaceText",
+            initialText: { zh: "7. 您会想要试试养金鱼吗？", ja: "7. 金魚を飼ってみたいと思いますか？", en: "7. Would you consider keeping a goldfish?" },
+            actualText: { zh: "7. 您发布内容后，通常会检查热度数据吗？", ja: "7. 投稿した後、再生数やいいね数を確認しますか？", en: "7. Do you check metrics after posting?" },
+            options: [
+                { val: 1, text: { zh: "从不", ja: "まったくない", en: "Never" }, nextId: "q17" },
+                { val: 2, text: { zh: "有时", ja: "時々", en: "Sometimes" }, nextId: "q17" },
+                { val: 3, text: { zh: "总是", ja: "必ずする", en: "Always" }, nextId: "q17" }
+            ]
+        },
+      
+        {
+            id: "q17",
+            img: "photo1.png",
+            alt: "一位女性的照片",
+            text: { zh: "17. 您是否认识这位女性？", ja: "17. この女性を知ってますが？", en: "17. Do you recognize this woman?" },
+            options: [
+                { val: "yes", text: { zh: "是", ja: "はい", en: "Yes" }, nextId: "video_top" },
+                { val: "no", text: { zh: "否", ja: "いいえ", en: "No" }, nextId: "video_top" }
+            ]
+        },
+
+        {
+            id: "video_top",
+            video: "https://www.youtube.com/embed/Ml_gxQOcEsg",
+            text: { 
+            //视频考虑换成自己的，这里是其中一个演出
+                zh: "在继续之前，请观看以下短片。",
+                 ja: "続ける前に、以下の短い動画をご覧ください。",
+                  en: "Before we continue, please watch the following short video."
+                 },
+            options: [
+                { val: "ok", text: { zh: "我了解了", ja: "了解した", en: "I have watched the video" }, nextId: "q19" },
+               
+            ]
+        },
+
+
+        {
+            id: "q19",
+            text: { zh: "19. 您经常以倍速观看视频吗？", ja: "19. 倍速で動画を見ることありますか？", en: "19. Do you often watch videos at double speed?" },
+            options: [
+                { val: 1, text: { zh: "经常", ja: "よく", en: "Often" }, nextId: "q20" },
+                { val: 2, text: { zh: "偶尔", ja: "時々", en: "Occasionally" }, nextId: "q20" },
+                { val: 3, text: { zh: "从不", ja: "まったくない", en: "Never" }, nextId: "q20" }
+            ]
+
+        },
+        
+        {
+            id: "q20",
+            text: { zh: "20. 您上一次感受到自己的双手是什么时候？", ja: "20. 最後に自分の手の感覚を意識したのはいつですか？", en: "20. When did you last notice the feeling of your own hands?" },
+            options: [
+                { val: 1, text: { zh: "就在刚才", ja: "さっき", en: "Just now" }, nextId: "news_top" },
+                { val: 2, text: { zh: "几小时前", ja: "数時間前", en: "A few hours ago" }, nextId: "news_top" },
+                { val: 3, text: { zh: "我不太记得了", ja: "あまり覚えていない", en: "I'm not really sure" }, nextId: "news_top" },
+                { val: 4, text: { zh: "我不理解这个问题", ja: "この質問の意味がよくわからない", en: "I don't understand the question" }, nextId: "news_top" }
+            ]
+        },
+        {
+            id: "news_top",
+            text: { 
+                zh: "以下是近期流传的几条新闻报道。请根据您的判断，评估每条信息的可信度。",
+                ja: "以下は、最近ネット上で広まっているニュースです。それぞれについて、信頼度を判断してください。",
+                en: "The following are recent news reports circulating online. Please evaluate the credibility of each piece of information based on your judgment." 
+            },
+            options: [
+                { val: "ok", text: { zh: "我了解了", ja: "了解した", en: "I agreed" }, nextId: "news_a" },
+               
+            ]
+        },
+
+        {
+            id: "news_a",
+            type: "news",
+            img: "NEWS1.png",
+            tag: "NEWS A",
+            text: { zh: "研究人员在对多地淡水养殖场的抽样检测中发现，部分淡水鱼类体内检出异尖线虫及阔节裂头绦虫幼虫，生食或半生食此类水产品存在感染风险。相关机构已建议消费者确保充分加热后食用。",
+             ja: "複数の淡水養殖場を対象にした抽出検査で、一部の淡水魚の体内からアニサキスおよび広節裂頭条虫の幼虫が検出されました。生食・半生食による感染リスクがあるとして、関係機関は十分に加熱してから食べるよう呼びかけています。", 
+             en: "Researchers conducting spot-checks at multiple freshwater fish farms have detected anisakis and broad tapeworm larvae in certain fish samples. Eating such fish raw or undercooked poses an infection risk.Relevant health authorities have recommended thorough cooking before consumption." },
+            options: [
+                { val: 1, text: { zh: "很可能是真实的", ja: "信用できる", en: "Very likely true" }, nextId: "end" },//这里留一个end因为question_input没写完
+                { val: 2, text: { zh: "很可能是虚假的", ja: "信用できない", en: "Very likely false" }, nextId: "question_input" },
+                { val: 3, text: { zh: "不确定", ja: "わからない", en: "Not sure" }, nextId: "question_input" }
+            ]
+        },
+        // 输入题
+        {
+            id: "question_input",
+            text: { zh: "18. 您认为她发生了什么？", ja: "18. 彼女に何が起きたと思いますか？", en: "18. What do you think happened to her?" },
+            type: "textarea", 
+            options: [
+                { val: "ok", text: { zh: "提交", ja: "提出", en: "Submit" }, nextId: "end" }
+            ]
+        },
+    ]
+};
+
+const BASE_IMG = "./"; // 本地测试用，上线后改为 "https://raw.githubusercontent.com/FRIN-yatsume/-Questionnaire-simulate/main/png/"
+let currentLang = null;
+let currentId = 'lang-select';
+let history = []; // 存储路径以实现“返回上一题”
+
+const container = document.getElementById('survey-container');
+
+/**
+ * 功能：语言选择页面
+ */
+function renderLangSelect() {
+    container.innerHTML = `
+        <h2 style="text-align:center">${surveyData.ui.zh.langTitle}</h2>
+        <div class="btn-list">
+            <button onclick="startSurvey('zh')">简体中文</button>
+            <button onclick="startSurvey('ja')">日本語</button>
+            <button onclick="startSurvey('en')">English</button>
+        </div>
+    `;
+}
+
+/**
+ * 功能：初始化问卷
+ */
+function startSurvey(lang) {
+    currentLang = lang;
+    currentId = "q4"; // 从第4题演示逻辑开始
+    renderQuestion();
+}
+
+/**
+ * 功能：渲染题目核心逻辑
+ */
+function renderQuestion() {
+    if (currentId === 'end') {
+        showEnd();
+        return;
+    }
+
+    const q = surveyData.questions.find(item => item.id === currentId);
+    let html = "";
+
+    // 1. 处理演出安排：定时文字替换 
+    if (q.specialEffect === "replaceText") {
+        html += `<h2 id="dynamic-text">${q.initialText[currentLang]}</h2>`;
+        setTimeout(() => {
+            const el = document.getElementById('dynamic-text');
+            if (el) el.innerText = q.actualText[currentLang];
+        }, 500);//这里的数字代表了毫秒数
+    } else {
+        if (q.type === 'news') html += `<span class="news-tag">${q.tag}</span>`;
+        html += `<h2>${q.text[currentLang]}</h2>`;
+    }
+
+    // 2. 处理配图逻辑：优先使用指定图片，否则使用占位符 
+    if (q.img || q.type === 'news') {
+        const imgSrc = q.img ? (BASE_IMG + q.img) : (BASE_IMG + "placeholder.png");
+        html += `<img src="${imgSrc}" class="question-img" onerror="this.src='${BASE_IMG}placeholder.png'">`;
+    }
+
+    // 2.1 处理视频嵌入
+    if (q.video) {
+        html += `<iframe src="${q.video}" class="question-video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    }
+
+// ... 前面的代码 (处理标题、图片等) ...
+
+// 3. 渲染选项或输入框
+    if (q.type === 'textarea') {
+    // 渲染输入框和确认按钮
+    html += `
+        <div class="btn-list">
+            <textarea id="user-input" 
+                style="width: 100%; height: 120px; padding: 12px; border-radius: 8px; border: 1.5px solid #d7d8da; font-family: inherit; resize: none;" 
+                placeholder="${surveyData.ui[currentLang].input}"></textarea>
+    `;
+    q.options.forEach(opt => {
+        html += `<button onclick="saveAndNext('${opt.nextId}')" style="text-align: center; background: #5a4765; color: white;">${opt.text[currentLang]}</button>`;
+    });
+    html += `</div>`;
+    } else {
+    // 普通渲染按钮逻辑
+    html += `<div class="btn-list">`;
+    q.options.forEach(opt => {
+        html += `<button onclick="navigate('${opt.nextId}')">${opt.text[currentLang]}</button>`;
+    });
+    html += `</div>`;
+}
+
+    // 4. 底部导航：返回上一题
+    if (history.length > 0) {
+        html += `<div class="nav"><button class="back-btn" onclick="goBack()">${surveyData.ui[currentLang].back}</button></div>`;
+    }
+
+    container.innerHTML = html;
+}
+/**
+ * 功能：处理输入框的跳转
+ */
+function saveAndNext(nextId) {
+    const inputVal = document.getElementById('user-input').value;
+    // 这里可以将 inputVal 存入一个全局结果变量中，以便后续导出
+    console.log("用户输入内容:", inputVal); 
+    
+    navigate(nextId);
+}
+/**
+ * 功能：跳转与历史记录
+ */
+function navigate(nextId) {
+    history.push(currentId);
+    currentId = nextId;
+    renderQuestion();
+}
+
+/**
+ * 功能：回退逻辑
+ */
+function goBack() {
+    if (history.length > 0) {
+        currentId = history.pop();
+        renderQuestion();
+    }
+}
+
+/*
+ * 功能：结束页面
+ */
+function showEnd() {
+    const endMsg = {
+        zh: "感谢您完成本次调查。您的回答已记录。请继续您的一天。<br><br>如果您对本调查有任何疑问，或希望了解更多关于富士神经科学研究中心的信息，欢迎通过以下方式联系我们：<br>X（Twitter）：@FRIN_Yatsume<br>Gmail: yatsume0401@gmail.com<br>我们通常在48小时内回复。",
+        ja: "アンケートにご協力ありがとうございました。どうぞ、よい一日をお過ごしください。<br><br>本アンケートに関するご質問や、<br><br>富士神経科学研究センターについての詳細をお知りになりたい方は、<br><br>以下の方法でご連絡ください：<br><br>X（Twitter）：@FRIN_Yatsume<br><br>Gmail：yatsume0401@gmail.com<br><br>通常48時間以内にご返信いたします。",
+        en: "Thank you for completing this survey. Your responses have been recorded. Please go on with your day.<br><br>If you have any questions about this survey, <br><br>or would like to learn more about the Fuji Research Institute of Neuroscience, <br><br>please reach out through the following:<br><br>X (Twitter): @FRIN_Yatsume<br>Gmail: yatsume0401@gmail.com<br>We typically respond within 48 hours."
+    };
+    container.innerHTML = `<div class="end-text">${endMsg[currentLang]}</div>`;
+    document.getElementById('logo-bottom').style.display = 'none';
+}
+
+// 启动入口
+renderLangSelect();
+</script>
+
+</body>
+</html>

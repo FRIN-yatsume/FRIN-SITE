@@ -1,0 +1,114 @@
+.questionnaire-wrap {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 6vh 5vw 10vh;
+  box-sizing: border-box;
+}
+
+.questionnaire-app {
+  --primary: #ffffff;
+  --button-text: #333333;
+  --button-text-hover: #333333;
+
+  font-family: 'PingFang SC', 'Hiragino Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: rgb(98, 92, 99);
+  width: 100%;
+  max-width: 700px;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin: 0 auto;
+}
+
+.questionnaire-app .question-img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 20px 0;
+  border: 1px solid #eee;
+}
+
+.questionnaire-app .question-video {
+  width: 100%;
+  height: 315px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.questionnaire-app h2 {
+  color: #f2f2f2;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.questionnaire-app .btn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.questionnaire-app button {
+  padding: 15px;
+  border: 1.5px solid #d7d8da;
+  border-radius: 10px;
+  background: rgb(234, 234, 234);
+  color: var(--button-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.questionnaire-app button:hover {
+  background: #f7def8;
+  border-color: var(--primary);
+  color: var(--button-text-hover);
+}
+
+.questionnaire-app .nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 20px;
+}
+
+.questionnaire-app .back-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.questionnaire-app .news-tag {
+  display: inline-block;
+  background: #333;
+  color: white;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.questionnaire-app .end-text {
+  color: white;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .questionnaire-app {
+    padding: 22px;
+    border-radius: 14px;
+  }
+  .questionnaire-app button {
+    padding: 13px;
+  }
+}
